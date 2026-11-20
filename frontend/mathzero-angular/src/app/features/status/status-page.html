@@ -1,0 +1,103 @@
+<section class="mx-auto w-full max-w-[var(--content-max)] px-4 pb-16 pt-10 sm:px-6 sm:pb-24 sm:pt-16">
+  <div class="max-w-3xl">
+    <p class="text-xs font-semibold uppercase tracking-[0.1em] text-accent">
+      {{ i18n.translate('home.eyebrow') }}
+    </p>
+    <h1 class="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+      {{ i18n.translate('home.title') }}
+    </h1>
+    <p class="mt-4 text-base leading-7 text-muted">{{ i18n.translate('home.intro') }}</p>
+  </div>
+
+  <div class="mt-10 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
+    <app-card [title]="i18n.translate('home.status.title')" heading="h2">
+      @if (loading()) {
+        <div class="flex items-center gap-3" role="status" aria-live="polite">
+          <span class="status-dot status-dot--pending" aria-hidden="true"></span>
+          <span class="text-sm text-muted">{{ i18n.translate('home.status.checking') }}</span>
+        </div>
+      } @else if (health(); as gateway) {
+        <div class="flex items-center gap-3" role="status" aria-live="polite">
+          <span class="status-dot status-dot--up" aria-hidden="true"></span>
+          <span class="text-sm font-semibold text-success">
+            {{ i18n.translate('home.status.up') }}
+          </span>
+        </div>
+
+        <dl class="mt-5 space-y-3 text-sm">
+          <div class="flex items-baseline justify-between gap-4 border-t border-line pt-3">
+            <dt class="text-muted">{{ i18n.translate('home.status.service') }}</dt>
+            <dd class="font-mono text-ink">{{ gateway.service }}</dd>
+          </div>
+          <div class="flex items-baseline justify-between gap-4 border-t border-line pt-3">
+            <dt class="text-muted">{{ i18n.translate('home.status.version') }}</dt>
+            <dd class="font-mono text-ink">{{ gateway.version }}</dd>
+          </div>
+          <div class="flex items-baseline justify-between gap-4 border-t border-line pt-3">
+            <dt class="text-muted">{{ i18n.translate('home.status.endpoint') }}</dt>
+            <dd class="max-w-[60%] truncate font-mono text-xs text-muted" dir="ltr">
+              {{ apiBaseUrl }}/health
+            </dd>
+          </div>
+        </dl>
+
+        <button appButton type="button" variant="ghost" size="sm" class="mt-5" (click)="refresh()">
+          {{ i18n.translate('home.status.retry') }}
+        </button>
+      } @else {
+        <div class="flex items-center gap-3" role="alert">
+          <span class="status-dot status-dot--down" aria-hidden="true"></span>
+          <span class="text-sm font-semibold text-danger">
+            {{ i18n.translate('home.status.down') }}
+          </span>
+        </div>
+
+        <p class="mt-4 text-sm leading-6 text-muted">{{ i18n.translate('home.status.error') }}</p>
+        <p class="mt-2 truncate font-mono text-xs text-muted" dir="ltr">
+          {{ apiBaseUrl }}/health
+        </p>
+
+        <button
+          appButton
+          type="button"
+          variant="secondary"
+          size="sm"
+          class="mt-5"
+          (click)="refresh()"
+        >
+          {{ i18n.translate('home.status.retry') }}
+        </button>
+      }
+    </app-card>
+
+    <div class="grid gap-5">
+      <app-card [title]="i18n.translate('home.phase.title')" heading="h2">
+        <ul class="space-y-3">
+          @for (item of phaseItems; track item) {
+            <li class="flex items-start gap-3 text-sm leading-6 text-muted">
+              <span class="mt-2.5 size-1.5 shrink-0 rounded-full bg-success" aria-hidden="true"></span>
+              <span>{{ i18n.translate(item) }}</span>
+            </li>
+          }
+        </ul>
+      </app-card>
+
+      <app-card [title]="i18n.translate('home.formulaLabel')" heading="h2">
+        <div class="rounded-surface border border-line bg-subtle p-4">
+          <app-formula
+            [expression]="'\\sum_{k=1}^{n} k = \\frac{n(n+1)}{2}'"
+            [display]="true"
+            [label]="i18n.translate('home.formulaLabel')"
+          />
+        </div>
+      </app-card>
+    </div>
+  </div>
+
+  <div class="mt-8 flex flex-wrap items-center gap-3">
+    <a routerLink="/" appButton variant="secondary">
+      <app-icon name="arrow-left" [size]="16" />
+      {{ i18n.translate('status.backHome') }}
+    </a>
+  </div>
+</section>

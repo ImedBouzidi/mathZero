@@ -1,0 +1,103 @@
+<section
+  class="primary-home mx-auto w-full max-w-[var(--content-max)] px-4 pb-12 pt-8 sm:px-6 sm:pt-10"
+>
+  <header class="primary-home__welcome">
+    <div>
+      <p class="text-sm font-semibold text-accent">{{ i18n.translate('primary.greeting') }}</p>
+      <h1 class="mt-1 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+        {{ i18n.translate('primary.welcome') }}
+      </h1>
+    </div>
+    <a routerLink="/primary/lessons" appButton variant="primary">
+      {{ i18n.translate('primary.map.cta') }}
+      <app-icon name="arrow-right" [size]="17" />
+    </a>
+  </header>
+
+  <div class="primary-home__layout mt-7">
+    <app-card
+      class="primary-home__map"
+      [title]="i18n.translate('primary.map.title')"
+      [subtitle]="i18n.translate('primary.map.subtitle')"
+      heading="h2"
+    >
+      <div class="primary-map-art" aria-hidden="true">
+        <span class="primary-map-art__star primary-map-art__star--one">
+          <app-icon name="star" [size]="24" />
+        </span>
+        <span class="primary-map-art__star primary-map-art__star--two">
+          <app-icon name="sparkles" [size]="20" />
+        </span>
+        <span class="primary-map-art__path"></span>
+        <span class="primary-map-art__island">
+          <app-icon name="map" [size]="32" />
+        </span>
+      </div>
+
+      <app-empty-state
+        icon="map"
+        [title]="i18n.translate('primary.lesson.empty.title')"
+        [body]="i18n.translate('primary.lesson.empty.body')"
+      >
+        <a routerLink="/primary/lessons" appButton variant="secondary" size="sm">
+          {{ i18n.translate('primary.lesson.cta') }}
+          <app-icon name="arrow-right" [size]="16" />
+        </a>
+      </app-empty-state>
+    </app-card>
+
+    <div class="primary-home__side">
+      <app-card [title]="i18n.translate('primary.mission.title')" heading="h2">
+        <app-empty-state
+          icon="target"
+          [title]="i18n.translate('primary.mission.empty.title')"
+          [body]="i18n.translate('primary.mission.empty.body')"
+        >
+          <a routerLink="/primary/exercises" appButton variant="primary" size="sm">
+            {{ i18n.translate('primary.exercises.title') }}
+          </a>
+        </app-empty-state>
+      </app-card>
+
+      <app-card [title]="i18n.translate('primary.lesson.title')" heading="h2">
+        <app-empty-state
+          icon="book-open"
+          [title]="i18n.translate('primary.lesson.empty.title')"
+          [body]="i18n.translate('primary.lesson.empty.body')"
+        >
+          <a routerLink="/primary/lessons" appButton variant="secondary" size="sm">
+            {{ i18n.translate('primary.lesson.cta') }}
+          </a>
+        </app-empty-state>
+      </app-card>
+    </div>
+  </div>
+
+  <div class="primary-home__collections mt-5">
+    <app-card [title]="i18n.translate('primary.stars.title')" heading="h2">
+      <div class="primary-collection">
+        <span class="primary-collection__icon primary-collection__icon--star" aria-hidden="true">
+          <app-icon name="star" [size]="25" />
+        </span>
+        <p class="text-sm leading-6 text-muted">{{ i18n.translate('primary.stars.hint') }}</p>
+      </div>
+    </app-card>
+
+    <app-card [title]="i18n.translate('primary.badges.title')" heading="h2">
+      <div class="primary-collection">
+        <span class="primary-collection__icon" aria-hidden="true">
+          <app-icon name="award" [size]="24" />
+        </span>
+        <p class="text-sm leading-6 text-muted">{{ i18n.translate('primary.badges.empty') }}</p>
+      </div>
+    </app-card>
+
+    <app-card [title]="i18n.translate('primary.progress.weekly')" heading="h2">
+      <app-empty-state
+        icon="bar-chart"
+        [title]="i18n.translate('primary.progress.empty')"
+        [body]="i18n.translate('primary.progress.body')"
+      />
+    </app-card>
+  </div>
+</section>

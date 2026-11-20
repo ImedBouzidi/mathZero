@@ -1,0 +1,14 @@
+.brand-mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  border-radius: 0.8rem;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-family: var(--experience-font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+}

@@ -1,0 +1,57 @@
+/*
+ * Primary — Math Adventure
+ * Warm paper, deep coral actions, sky/mint learning cues and a star reward.
+ * Verified text pairs: ink/canvas 14.3:1, white/CTA 5.2:1, muted/canvas 5.9:1.
+ */
+[data-experience='primary'] {
+  --bg-canvas: #fff8ee;
+  --bg-surface: #ffffff;
+  --bg-raised: #ffffff;
+  --bg-subtle: #fff1df;
+
+  --text-primary: #2b2140;
+  --text-secondary: #6b5b7a;
+  --text-muted: #6b5b7a;
+
+  --border-subtle: #ead9c6;
+  --border-strong: #d9bfa6;
+
+  --accent: #c2410c;
+  --accent-hover: #9a3412;
+  --accent-contrast: #ffffff;
+  --accent-soft: #ffe8d6;
+
+  --accent-2: #1d6fd6;
+  --accent-2-soft: #e0f2fe;
+
+  --success: #047857;
+  --success-soft: #d1fae5;
+  --warning: #9a6700;
+  --warning-soft: #fef3c7;
+  --danger: #b91c1c;
+  --danger-soft: #fee2e2;
+  --info: #1d6fd6;
+  --reward: #f2b705;
+
+  --nav-bg: #ffffff;
+  --nav-text: #2b2140;
+  --nav-active-bg: #ffe8d6;
+
+  --focus-ring: #1d4ed8;
+
+  --experience-font-display:
+    'Fredoka', 'Baloo Bhaijaan 2', 'Noto Sans Arabic', ui-rounded, system-ui, sans-serif;
+  --experience-font-body:
+    'Nunito Sans', 'Noto Sans Arabic', 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --experience-font-math: 'KaTeX_Main', 'Times New Roman', serif;
+
+  --card-radius: 1.5rem;
+  --control-radius: 1rem;
+  --card-shadow:
+    0 2px 0 rgb(234 217 198 / 0.9), 0 18px 36px -28px rgb(120 70 30 / 0.45);
+  --float-shadow: 0 28px 60px -30px rgb(120 70 30 / 0.4);
+
+  --tap-target: 3rem;
+  --control-height: 3rem;
+  --content-max: 78rem;
+}

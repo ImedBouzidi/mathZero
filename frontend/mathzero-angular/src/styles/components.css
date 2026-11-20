@@ -1,0 +1,137 @@
+/*
+ * Shared component primitives that must work as attribute directives
+ * (and therefore cannot rely on component-scoped styles).
+ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-block-size: var(--control-height);
+  border: 1px solid transparent;
+  border-radius: var(--control-radius);
+  padding: 0.5rem 1.1rem;
+  font-family: var(--experience-font-body);
+  font-size: 0.9375rem;
+  font-weight: 650;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    transform 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn:disabled,
+.btn[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
+  box-shadow: 0 10px 24px -18px var(--accent);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.btn--secondary {
+  background: var(--bg-surface);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.btn--secondary:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.btn--ghost:hover:not(:disabled) {
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+}
+
+.btn--reward {
+  background: var(--reward);
+  border-color: var(--reward);
+  color: var(--text-primary);
+}
+
+.btn--reward:hover:not(:disabled) {
+  filter: brightness(0.96);
+}
+
+.btn--danger {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #ffffff;
+}
+
+.btn--danger:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.btn--sm {
+  min-block-size: 2.25rem;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.8125rem;
+  border-radius: calc(var(--control-radius) * 0.8);
+}
+
+.btn--lg {
+  min-block-size: calc(var(--control-height) + 0.5rem);
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+.btn--block {
+  inline-size: 100%;
+}
+
+/* Consistent keyboard focus for links that are not buttons. */
+.focus-ring:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Subtle hover feedback for clickable cards. */
+.interactive-card {
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.interactive-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--float-shadow);
+}
+
+.interactive-card:focus-within {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}

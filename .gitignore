@@ -1,0 +1,39 @@
+# Dependencies and build output
+node_modules/
+target/
+dist/
+.angular/
+coverage/
+*.tsbuildinfo
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Logs
+*.log
+logs/
+
+# IDE and OS
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+.DS_Store
+Thumbs.db
+
+# Test and tooling caches
+.cache/
+.eslintcache
+.vitest/
+playwright-report/
+test-results/
+
+# Local databases and volumes
+*.sqlite
+*.sqlite3

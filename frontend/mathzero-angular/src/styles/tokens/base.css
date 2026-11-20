@@ -1,0 +1,104 @@
+/*
+ * Semantic token contract shared by all three experiences.
+ *
+ * Base values describe the brand/account surfaces. The experience theme files
+ * override the same variables, so components never need to know which cycle
+ * they are rendered in.
+ */
+@theme inline {
+  --color-canvas: var(--bg-canvas);
+  --color-surface: var(--bg-surface);
+  --color-raised: var(--bg-raised);
+  --color-subtle: var(--bg-subtle);
+  --color-ink: var(--text-primary);
+  --color-muted: var(--text-secondary);
+  --color-faint: var(--text-muted);
+  --color-line: var(--border-subtle);
+  --color-line-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-contrast: var(--accent-contrast);
+  --color-accent-soft: var(--accent-soft);
+  --color-second: var(--accent-2);
+  --color-second-soft: var(--accent-2-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-reward: var(--reward);
+  --color-nav: var(--nav-bg);
+  --color-nav-text: var(--nav-text);
+  --color-nav-active: var(--nav-active-bg);
+
+  --font-display: var(--experience-font-display);
+  --font-body: var(--experience-font-body);
+  --font-math: var(--experience-font-math);
+
+  --radius-surface: var(--card-radius);
+  --radius-control: var(--control-radius);
+  --radius-pill: 999px;
+
+  --shadow-panel: var(--card-shadow);
+  --shadow-float: var(--float-shadow);
+}
+
+:root {
+  color-scheme: light;
+
+  --bg-canvas: #f6f7fb;
+  --bg-surface: #ffffff;
+  --bg-raised: #ffffff;
+  --bg-subtle: #eef1f8;
+
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-muted: #667085;
+
+  --border-subtle: #e2e6ef;
+  --border-strong: #c9d0de;
+
+  --accent: #6444e8;
+  --accent-hover: #5636d6;
+  --accent-contrast: #ffffff;
+  --accent-soft: #eee9ff;
+
+  --accent-2: #0f766e;
+  --accent-2-soft: #ccfbf1;
+
+  --success: #15803d;
+  --success-soft: #dcfce7;
+  --warning: #b45309;
+  --warning-soft: #fef3c7;
+  --danger: #b91c1c;
+  --danger-soft: #fee2e2;
+  --info: #1d4ed8;
+  --reward: #f2b705;
+
+  --nav-bg: #0b1220;
+  --nav-text: #c7d2e5;
+  --nav-active-bg: #1e293b;
+
+  --focus-ring: #6444e8;
+
+  --experience-font-display:
+    'Inter Variable', 'Inter', 'Noto Sans Arabic', ui-sans-serif, system-ui, sans-serif;
+  --experience-font-body:
+    'Inter Variable', 'Inter', 'Noto Sans Arabic', ui-sans-serif, system-ui, sans-serif;
+  --experience-font-math: 'KaTeX_Main', 'Times New Roman', serif;
+
+  --card-radius: 1rem;
+  --control-radius: 0.75rem;
+  --card-shadow:
+    0 1px 2px rgb(17 24 39 / 0.05), 0 18px 40px -32px rgb(17 24 39 / 0.45);
+  --float-shadow: 0 24px 60px -30px rgb(17 24 39 / 0.35);
+
+  --tap-target: 2.75rem;
+  --control-height: 2.75rem;
+  --content-max: 80rem;
+  --sidebar-width: 15rem;
+  --rail-width: 4.5rem;
+  --panel-width: 17.5rem;
+}

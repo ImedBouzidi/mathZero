@@ -1,0 +1,55 @@
+:host {
+  display: block;
+}
+
+.basic-dashboard__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.basic-dashboard__grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 720px) {
+  .basic-dashboard__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+
+  .basic-dashboard__continue {
+    grid-column: span 2;
+  }
+}
+
+@media (min-width: 1100px) {
+  .basic-dashboard__grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  .basic-dashboard__continue {
+    grid-column: span 8;
+  }
+
+  .basic-dashboard__objective,
+  .basic-dashboard__challenge {
+    grid-column: span 4;
+  }
+
+  .basic-dashboard__chapters,
+  .basic-dashboard__activity,
+  .basic-dashboard__recommended {
+    grid-column: span 4;
+  }
+}
+
+@media (max-width: 639px) {
+  .basic-dashboard__header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

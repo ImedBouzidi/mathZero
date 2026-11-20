@@ -1,0 +1,13 @@
+package tn.mathzero.eureka;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class EurekaServerApplicationTests {
+
+    @Test
+    void contextLoads() {
+        // Verifies that the Eureka registry starts with the current configuration.
+    }
+}

@@ -1,0 +1,132 @@
+:host {
+  display: block;
+}
+
+.primary-home__welcome {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.25rem;
+}
+
+.primary-home__layout {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.primary-home__map {
+  min-width: 0;
+}
+
+.primary-home__side,
+.primary-home__collections {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.primary-map-art {
+  position: relative;
+  display: grid;
+  min-block-size: 10rem;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  border-radius: calc(var(--card-radius) * 0.8);
+  background:
+    radial-gradient(circle at 20% 30%, var(--accent-soft) 0 0.35rem, transparent 0.4rem),
+    radial-gradient(circle at 78% 68%, var(--accent-2-soft) 0 0.45rem, transparent 0.5rem),
+    var(--bg-subtle);
+}
+
+.primary-map-art__path {
+  position: absolute;
+  inline-size: min(58%, 24rem);
+  block-size: 4.5rem;
+  border-block-start: 3px dashed var(--border-strong);
+  border-radius: 50%;
+  transform: rotate(-8deg);
+}
+
+.primary-map-art__island,
+.primary-map-art__star {
+  position: absolute;
+  display: grid;
+  place-items: center;
+}
+
+.primary-map-art__island {
+  z-index: 1;
+  inline-size: 4rem;
+  block-size: 4rem;
+  border: 2px solid var(--accent);
+  border-radius: 1.35rem;
+  background: var(--bg-surface);
+  color: var(--accent);
+  box-shadow: var(--card-shadow);
+}
+
+.primary-map-art__star {
+  color: var(--reward);
+}
+
+.primary-map-art__star--one {
+  inset-inline-start: 22%;
+  inset-block-start: 24%;
+}
+
+.primary-map-art__star--two {
+  inset-inline-end: 20%;
+  inset-block-end: 22%;
+  color: var(--accent-2);
+}
+
+.primary-collection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-block-size: 4rem;
+}
+
+.primary-collection__icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: 3.25rem;
+  block-size: 3.25rem;
+  border-radius: 1.1rem;
+  background: var(--bg-subtle);
+  color: var(--accent);
+}
+
+.primary-collection__icon--star {
+  background: color-mix(in srgb, var(--reward) 20%, white);
+  color: #805500;
+}
+
+@media (min-width: 768px) {
+  .primary-home__collections {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .primary-home__layout {
+    grid-template-columns: minmax(0, 1.45fr) minmax(17rem, 0.75fr);
+    align-items: start;
+  }
+
+  .primary-home__side {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 639px) {
+  .primary-home__welcome {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .primary-home__welcome a {
+    inline-size: 100%;
+  }
+}

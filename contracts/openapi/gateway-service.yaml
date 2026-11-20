@@ -1,0 +1,74 @@
+openapi: 3.1.0
+info:
+  title: Mathematics Zero to Hero — Gateway API
+  version: 0.1.0
+  description: |
+    Public API contract exposed by the API Gateway. Business endpoints are added
+    with their services; the browser never receives internal service URLs.
+servers:
+  - url: http://localhost:8090/api/v1
+    description: Local development Gateway
+tags:
+  - name: Platform
+    description: Platform-level endpoints
+paths:
+  /health:
+    get:
+      tags: [Platform]
+      operationId: getGatewayHealth
+      summary: Public Gateway health snapshot
+      description: |
+        Browser-facing readiness check. Operational monitoring should use
+        `/actuator/health` on the Gateway instead.
+      parameters:
+        - name: X-Request-Id
+          in: header
+          required: false
+          schema:
+            type: string
+            maxLength: 128
+          description: Optional correlation identifier. Generated when absent.
+      responses:
+        '200':
+          description: Gateway accepts public API traffic
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+              description: Correlation identifier used for the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GatewayHealthEnvelope'
+components:
+  schemas:
+    GatewayHealthEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: '#/components/schemas/GatewayHealth'
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+    GatewayHealth:
+      type: object
+      required: [status, service, version, timestamp]
+      properties:
+        status:
+          type: string
+          example: UP
+        service:
+          type: string
+          example: gateway-service
+        version:
+          type: string
+          example: 0.1.0
+        timestamp:
+          type: string
+          format: date-time
+    ResponseMeta:
+      type: object
+      required: [requestId]
+      properties:
+        requestId:
+          type: string

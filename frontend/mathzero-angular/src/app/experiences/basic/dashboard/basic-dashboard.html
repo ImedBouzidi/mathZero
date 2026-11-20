@@ -1,0 +1,111 @@
+<section
+  class="basic-dashboard mx-auto w-full max-w-[var(--content-max)] px-4 py-6 sm:px-6 sm:py-8"
+>
+  <header class="basic-dashboard__header">
+    <div>
+      <p class="text-sm font-semibold text-accent">{{ i18n.translate('basic.greeting') }}</p>
+      <h1 class="mt-1 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
+        {{ i18n.translate('basic.welcome') }}
+      </h1>
+    </div>
+    <app-badge tone="accent">{{ i18n.translate('common.preview') }}</app-badge>
+  </header>
+
+  <div class="basic-dashboard__grid mt-6">
+    <app-card
+      class="basic-dashboard__continue"
+      [title]="i18n.translate('basic.continue.title')"
+      [subtitle]="i18n.translate('basic.lessons.subtitle')"
+      heading="h2"
+    >
+      <app-empty-state
+        icon="book-open"
+        [title]="i18n.translate('basic.continue.empty.title')"
+        [body]="i18n.translate('basic.continue.empty.body')"
+      >
+        <a routerLink="/basic/lessons" appButton variant="primary" size="sm">
+          {{ i18n.translate('basic.continue.cta') }}
+          <app-icon name="arrow-right" [size]="16" />
+        </a>
+      </app-empty-state>
+    </app-card>
+
+    <app-card
+      class="basic-dashboard__objective"
+      [title]="i18n.translate('basic.objective.title')"
+      heading="h2"
+    >
+      <app-empty-state
+        icon="target"
+        [title]="i18n.translate('basic.progress.empty.title')"
+        [body]="i18n.translate('basic.progress.empty.body')"
+      >
+        <a routerLink="/basic/progress" appButton variant="secondary" size="sm">
+          {{ i18n.translate('basic.nav.progress') }}
+        </a>
+      </app-empty-state>
+    </app-card>
+
+    <app-card
+      class="basic-dashboard__chapters"
+      [title]="i18n.translate('basic.chapters.title')"
+      heading="h2"
+    >
+      <app-empty-state
+        icon="layers"
+        [title]="i18n.translate('basic.chapters.empty.title')"
+        [body]="i18n.translate('basic.chapters.empty.body')"
+      >
+        <a routerLink="/basic/lessons" appButton variant="ghost" size="sm">
+          {{ i18n.translate('basic.nav.chapters') }}
+          <app-icon name="arrow-right" [size]="16" />
+        </a>
+      </app-empty-state>
+    </app-card>
+
+    <app-card
+      class="basic-dashboard__activity"
+      [title]="i18n.translate('basic.activity.title')"
+      heading="h2"
+    >
+      <app-empty-state
+        icon="bar-chart"
+        [title]="i18n.translate('basic.activity.empty')"
+        [body]="i18n.translate('basic.activity.hint')"
+      />
+    </app-card>
+
+    <app-card
+      class="basic-dashboard__challenge"
+      [title]="i18n.translate('basic.challenge.title')"
+      heading="h2"
+    >
+      <app-empty-state
+        icon="trophy"
+        [title]="i18n.translate('basic.challenge.empty.title')"
+        [body]="i18n.translate('basic.challenge.empty.body')"
+      >
+        <a routerLink="/basic/challenges" appButton variant="secondary" size="sm">
+          {{ i18n.translate('basic.challenge.cta') }}
+        </a>
+      </app-empty-state>
+    </app-card>
+
+    <app-card
+      class="basic-dashboard__recommended"
+      [title]="i18n.translate('basic.recommended.title')"
+      heading="h2"
+    >
+      <app-empty-state
+        icon="sparkles"
+        [title]="i18n.translate('common.noData')"
+        [body]="i18n.translate('basic.recommended.empty')"
+      >
+        <a routerLink="/basic/exercises" appButton variant="ghost" size="sm">
+          {{ i18n.translate('basic.nav.exercises') }}
+          <app-icon name="arrow-right" [size]="16" />
+        </a>
+      </app-empty-state>
+    </app-card>
+  </div>
+</section>

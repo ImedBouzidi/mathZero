@@ -1,0 +1,36 @@
+.primary-mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: 2.65rem;
+  block-size: 2.65rem;
+  border-radius: 1rem;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-family: var(--experience-font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 10px 20px -14px var(--accent);
+}
+
+.primary-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-block-size: 2.5rem;
+  border-radius: 999px;
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  padding-inline: 0.65rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.primary-chip app-icon {
+  color: var(--reward);
+}
+
+.primary-chip:last-of-type app-icon {
+  color: var(--accent);
+}

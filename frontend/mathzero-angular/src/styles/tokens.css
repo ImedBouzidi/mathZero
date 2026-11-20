@@ -1,0 +1,44 @@
+/*
+ * Design tokens for Mathematics Zero to Hero.
+ *
+ * Deep navy foundations, electric violet as the interactive accent and
+ * emerald for progress. Tokens are exposed as Tailwind theme variables so
+ * utilities such as `bg-ink-900`, `text-violet-400` or `rounded-card` are
+ * generated from this single source of truth.
+ */
+@theme {
+  --color-ink-950: #070b14;
+  --color-ink-900: #0b1220;
+  --color-ink-800: #111b2e;
+  --color-ink-700: #1a2740;
+  --color-ink-600: #253552;
+
+  --color-mist-50: #f7f9ff;
+  --color-mist-100: #eef2fb;
+  --color-mist-300: #c3cde3;
+  --color-mist-400: #9aa7bd;
+  --color-mist-500: #77849d;
+
+  --color-violet-300: #b9a9ff;
+  --color-violet-400: #9a83ff;
+  --color-violet-500: #7c5cff;
+  --color-violet-600: #6444e8;
+
+  --color-emerald-400: #34d399;
+  --color-emerald-500: #10b981;
+  --color-amber-400: #f5c05e;
+  --color-danger-400: #f47b81;
+  --color-danger-500: #e14d56;
+
+  --font-sans:
+    'Inter Variable', 'Inter', 'Noto Sans Arabic', ui-sans-serif, system-ui, -apple-system,
+    'Segoe UI', sans-serif;
+  --font-arabic: 'Noto Sans Arabic', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius-card: 1.25rem;
+  --radius-control: 0.75rem;
+
+  --shadow-card: inset 0 1px 0 rgb(255 255 255 / 0.04), 0 18px 40px -24px rgb(0 0 0 / 0.8);
+  --shadow-focus: 0 0 0 3px rgb(124 92 255 / 0.35);
+}

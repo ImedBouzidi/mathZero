@@ -1,0 +1,58 @@
+/*
+ * Basic — Math Challenge
+ * Navy rail, indigo action, turquoise progress. Compact but breathable.
+ * Verified text pairs: ink/canvas 17.5:1, white/accent 7.9:1, nav text/navy 11.3:1.
+ */
+[data-experience='basic'] {
+  --bg-canvas: #f5f7fb;
+  --bg-surface: #ffffff;
+  --bg-raised: #ffffff;
+  --bg-subtle: #edf1f8;
+
+  --text-primary: #0b1220;
+  --text-secondary: #52617a;
+  --text-muted: #66758c;
+
+  --border-subtle: #dce3ef;
+  --border-strong: #c4cfe0;
+
+  --accent: #4338ca;
+  --accent-hover: #3730a3;
+  --accent-contrast: #ffffff;
+  --accent-soft: #e7e9ff;
+
+  --accent-2: #0f766e;
+  --accent-2-soft: #ccfbf1;
+
+  --success: #15803d;
+  --success-soft: #dcfce7;
+  --warning: #b45309;
+  --warning-soft: #fef3c7;
+  --danger: #b91c1c;
+  --danger-soft: #fee2e2;
+  --info: #2563eb;
+  --reward: #f59e0b;
+
+  --nav-bg: #0c1b33;
+  --nav-text: #c7d2e5;
+  --nav-active-bg: #1e3a6e;
+
+  --focus-ring: #2563eb;
+
+  --experience-font-display:
+    'Outfit Variable', 'Outfit', 'Noto Sans Arabic', ui-sans-serif, system-ui, sans-serif;
+  --experience-font-body:
+    'Inter Variable', 'Inter', 'Noto Sans Arabic', ui-sans-serif, system-ui, sans-serif;
+  --experience-font-math: 'KaTeX_Main', 'Times New Roman', serif;
+
+  --card-radius: 1rem;
+  --control-radius: 0.625rem;
+  --card-shadow:
+    0 1px 2px rgb(15 23 42 / 0.06), 0 12px 26px -24px rgb(15 23 42 / 0.45);
+  --float-shadow: 0 24px 56px -28px rgb(15 23 42 / 0.4);
+
+  --tap-target: 2.75rem;
+  --control-height: 2.75rem;
+  --content-max: 82rem;
+  --sidebar-width: 15rem;
+}

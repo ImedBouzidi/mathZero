@@ -1,0 +1,14 @@
+.brand-mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  border-radius: 0.85rem;
+  background: linear-gradient(135deg, var(--color-violet-500), #4f46e5);
+  box-shadow: 0 10px 24px -14px rgb(124 92 255 / 0.9);
+  color: var(--color-mist-50);
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+}

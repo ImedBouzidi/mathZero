@@ -1,0 +1,77 @@
+<div class="flex min-h-dvh flex-col">
+  <a class="skip-link" href="#main-content">{{ i18n.translate('nav.skip') }}</a>
+
+  <header class="border-b border-line bg-surface">
+    <div
+      class="mx-auto flex w-full max-w-[var(--content-max)] items-center gap-3 px-4 py-3 sm:px-6"
+    >
+      <a
+        routerLink="/"
+        class="focus-ring flex min-w-0 items-center gap-3 rounded-control"
+        [attr.aria-label]="i18n.translate('app.name')"
+      >
+        <span class="brand-mark" aria-hidden="true">∑</span>
+        <span class="flex min-w-0 flex-col leading-tight">
+          <span class="truncate text-sm font-semibold tracking-tight text-ink sm:text-base">
+            Mathematics <span class="text-accent">Zero to Hero</span>
+          </span>
+          <span class="hidden truncate text-xs text-muted sm:block">
+            {{ i18n.translate('app.tagline') }}
+          </span>
+        </span>
+      </a>
+
+      <nav
+        class="ms-auto hidden items-center gap-1 md:flex"
+        [attr.aria-label]="i18n.translate('nav.label')"
+      >
+        <a
+          routerLink="/"
+          routerLinkActive="bg-subtle text-ink"
+          [routerLinkActiveOptions]="{ exact: true }"
+          ariaCurrentWhenActive="page"
+          class="focus-ring rounded-control px-3 py-2 text-sm font-medium text-muted transition-colors hover:text-ink"
+        >
+          {{ i18n.translate('nav.home') }}
+        </a>
+        <a
+          routerLink="/onboarding"
+          routerLinkActive="bg-subtle text-ink"
+          ariaCurrentWhenActive="page"
+          class="focus-ring rounded-control px-3 py-2 text-sm font-medium text-muted transition-colors hover:text-ink"
+        >
+          {{ i18n.translate('common.experience') }}
+        </a>
+        <a
+          routerLink="/status"
+          routerLinkActive="bg-subtle text-ink"
+          ariaCurrentWhenActive="page"
+          class="focus-ring rounded-control px-3 py-2 text-sm font-medium text-muted transition-colors hover:text-ink"
+        >
+          {{ i18n.translate('common.status') }}
+        </a>
+      </nav>
+
+      <div class="ms-auto md:ms-2">
+        <span class="text-xs font-medium text-muted">
+          {{ i18n.language() === 'fr' ? 'FR' : 'AR' }}
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" tabindex="-1" class="flex-1">
+    <router-outlet />
+  </main>
+
+  <footer class="border-t border-line bg-surface">
+    <div
+      class="mx-auto flex w-full max-w-[var(--content-max)] flex-col gap-2 px-4 py-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between sm:px-6"
+    >
+      <p>{{ i18n.translate('brand.footer') }}</p>
+      <a routerLink="/status" class="focus-ring font-medium text-accent hover:text-accent-hover">
+        {{ i18n.translate('brand.statusLink') }}
+      </a>
+    </div>
+  </footer>
+</div>

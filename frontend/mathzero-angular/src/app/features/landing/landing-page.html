@@ -1,0 +1,208 @@
+<section class="mx-auto w-full max-w-[var(--content-max)] px-4 pb-14 pt-10 sm:px-6 sm:pb-20 sm:pt-16">
+  <div class="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+    <div>
+      <p
+        class="inline-flex items-center gap-2 rounded-pill border border-line bg-surface px-3 py-1 text-xs font-semibold uppercase tracking-[0.09em] text-accent"
+      >
+        {{ i18n.translate('brand.eyebrow') }}
+      </p>
+
+      <h1
+        class="mt-5 max-w-2xl text-4xl font-semibold leading-[1.05] tracking-tight text-ink sm:text-5xl lg:text-6xl"
+      >
+        {{ i18n.translate('brand.title') }}
+      </h1>
+
+      <p class="mt-5 max-w-2xl text-base leading-7 text-muted sm:text-lg sm:leading-8">
+        {{ i18n.translate('brand.intro') }}
+      </p>
+
+      <div class="mt-8 flex flex-wrap items-center gap-3">
+        <a routerLink="/onboarding" appButton variant="primary" size="lg">
+          {{ i18n.translate('brand.choose') }}
+        </a>
+        <a routerLink="/status" appButton variant="secondary" size="lg">
+          {{ i18n.translate('common.status') }}
+        </a>
+      </div>
+
+      <p class="mt-5 max-w-xl text-xs leading-5 text-muted">
+        {{ i18n.translate('brand.previewNote') }}
+      </p>
+    </div>
+
+    <div class="experience-board" aria-hidden="true">
+      <div class="board-card board-card--primary">
+        <div class="board-card__top">
+          <span class="board-dot"></span>
+          <span class="board-line"></span>
+        </div>
+        <svg viewBox="0 0 260 150" class="board-art">
+          <path
+            d="M20 118 C55 110, 58 76, 92 82 S142 120, 176 78 S220 40, 244 44"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="4"
+            stroke-linecap="round"
+            stroke-dasharray="1 9"
+          />
+          <circle cx="20" cy="118" r="10" fill="currentColor" />
+          <circle cx="92" cy="82" r="10" fill="currentColor" opacity="0.75" />
+          <circle cx="176" cy="78" r="10" fill="currentColor" opacity="0.35" />
+          <circle cx="244" cy="44" r="10" fill="currentColor" opacity="0.2" />
+        </svg>
+        <div class="board-pills">
+          <span class="board-pill"></span>
+          <span class="board-pill board-pill--short"></span>
+        </div>
+      </div>
+
+      <div class="board-card board-card--basic">
+        <div class="board-card__top">
+          <span class="board-dot"></span>
+          <span class="board-line"></span>
+        </div>
+        <div class="board-bars">
+          <span style="height: 34%"></span>
+          <span style="height: 52%"></span>
+          <span style="height: 44%"></span>
+          <span style="height: 72%"></span>
+          <span style="height: 61%"></span>
+          <span style="height: 88%"></span>
+        </div>
+        <div class="board-pills">
+          <span class="board-pill"></span>
+          <span class="board-pill board-pill--short"></span>
+        </div>
+      </div>
+
+      <div class="board-card board-card--secondary">
+        <div class="board-card__top">
+          <span class="board-dot"></span>
+          <span class="board-line"></span>
+        </div>
+        <svg viewBox="0 0 260 150" class="board-art board-art--axes">
+          <path d="M20 130H245M130 12V142" stroke="currentColor" stroke-width="1.5" opacity="0.35" />
+          <path
+            d="M45 120 C85 118, 108 96, 130 58 S175 18, 215 20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="4"
+            stroke-linecap="round"
+          />
+        </svg>
+        <div class="board-pills">
+          <span class="board-pill"></span>
+          <span class="board-pill board-pill--short"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section
+  id="parcours"
+  class="border-y border-line bg-surface py-14 sm:py-20"
+  [attr.aria-labelledby]="'experiences-title'"
+>
+  <div class="mx-auto w-full max-w-[var(--content-max)] px-4 sm:px-6">
+    <div class="max-w-2xl">
+      <p class="text-xs font-semibold uppercase tracking-[0.1em] text-accent">
+        {{ i18n.translate('brand.choose') }}
+      </p>
+      <h2 id="experiences-title" class="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+        {{ i18n.translate('brand.chooseBody') }}
+      </h2>
+    </div>
+
+    <div class="mt-9 grid gap-5 lg:grid-cols-3">
+      @for (experience of experiences; track experience.id) {
+        <article [class]="'experience-card experience-card--' + experience.id">
+          <div class="flex items-start justify-between gap-3">
+            <span class="experience-card__icon">
+              <app-icon [name]="experience.icon" [size]="26" />
+            </span>
+            <span class="rounded-pill bg-surface/80 px-2.5 py-1 text-[0.6875rem] font-semibold uppercase tracking-[0.08em]">
+              {{ i18n.translate(experience.taglineKey) }}
+            </span>
+          </div>
+
+          <h3 class="mt-5 text-2xl font-semibold tracking-tight text-ink">
+            {{ i18n.translate(experience.nameKey) }}
+          </h3>
+          <p class="mt-2 text-sm leading-6 text-muted">
+            {{ i18n.translate(experience.bodyKey) }}
+          </p>
+
+          <ul class="mt-5 space-y-2.5">
+            @for (point of experience.pointKeys; track point) {
+              <li class="flex items-start gap-2.5 text-sm leading-6 text-ink">
+                <span class="experience-card__check">
+                  <app-icon name="check" [size]="14" [strokeWidth]="2.25" />
+                </span>
+                <span>{{ i18n.translate(point) }}</span>
+              </li>
+            }
+          </ul>
+
+          <div class="mt-7 flex items-center justify-between gap-3">
+            <a
+              [routerLink]="experience.path"
+              appButton
+              variant="secondary"
+              size="sm"
+              class="experience-card__cta"
+            >
+              {{ i18n.translate('experience.choose') }}
+              <app-icon name="arrow-right" [size]="16" />
+            </a>
+            <span class="text-[0.6875rem] font-semibold uppercase tracking-[0.08em] text-muted">
+              {{ i18n.translate('common.preview') }}
+            </span>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="mx-auto w-full max-w-[var(--content-max)] px-4 py-14 sm:px-6 sm:py-20">
+  <div class="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+    <div>
+      <h2 class="text-3xl font-semibold tracking-tight text-ink">
+        {{ i18n.translate('landing.shared.title') }}
+      </h2>
+      <p class="mt-3 max-w-xl text-sm leading-6 text-muted">
+        {{ i18n.translate('landing.shared.body') }}
+      </p>
+    </div>
+
+    <div class="grid gap-3 sm:grid-cols-2">
+      @for (item of sharedKeys; track item.key) {
+        <div class="flex items-start gap-3 rounded-surface border border-line bg-surface p-4 shadow-panel">
+          <span class="grid size-10 flex-none place-items-center rounded-control bg-accent-soft text-accent">
+            <app-icon [name]="item.icon" [size]="20" />
+          </span>
+          <p class="text-sm font-medium leading-6 text-ink">
+            {{ i18n.translate(item.key) }}
+          </p>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div
+    class="mt-10 flex flex-col gap-5 rounded-surface border border-line bg-surface p-6 shadow-panel sm:flex-row sm:items-center sm:justify-between sm:p-8"
+  >
+    <div>
+      <h2 class="text-xl font-semibold text-ink">{{ i18n.translate('landing.status.title') }}</h2>
+      <p class="mt-2 max-w-2xl text-sm leading-6 text-muted">
+        {{ i18n.translate('landing.status.body') }}
+      </p>
+    </div>
+    <a routerLink="/status" appButton variant="secondary" class="flex-none">
+      {{ i18n.translate('landing.status.cta') }}
+      <app-icon name="external-link" [size]="16" />
+    </a>
+  </div>
+</section>

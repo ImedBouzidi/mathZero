@@ -1,0 +1,193 @@
+<div class="min-h-dvh bg-canvas text-ink lg:grid lg:grid-cols-[var(--sidebar-width)_minmax(0,1fr)]">
+  <a class="skip-link" href="#main-content">{{ i18n.translate('nav.skip') }}</a>
+
+  <aside class="sticky top-0 hidden h-dvh flex-col bg-nav text-nav-text lg:flex">
+    <a
+      routerLink="/basic"
+      class="focus-ring flex items-center gap-3 border-b border-white/10 px-5 py-5"
+      [attr.aria-label]="i18n.translate('experience.theme.basic')"
+    >
+      <span class="basic-mark" aria-hidden="true">∑</span>
+      <span class="flex min-w-0 flex-col leading-tight">
+        <span class="truncate text-base font-semibold text-white">
+          {{ i18n.translate('experience.theme.basic') }}
+        </span>
+        <span class="truncate text-xs text-nav-text/80">
+          {{ i18n.translate('landing.basic.tagline') }}
+        </span>
+      </span>
+    </a>
+
+    <nav
+      class="flex-1 overflow-y-auto px-3 py-4"
+      [attr.aria-label]="i18n.translate('basic.nav.label')"
+    >
+      <p class="px-3 pb-2 text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-nav-text/60">
+        {{ i18n.translate('common.experience') }}
+      </p>
+      <ul class="space-y-1">
+        @for (item of navItems; track item.path) {
+          <li>
+            <a
+              [routerLink]="item.path"
+              routerLinkActive="bg-nav-active text-white"
+              [routerLinkActiveOptions]="{ exact: item.exact }"
+              ariaCurrentWhenActive="page"
+              class="focus-ring flex items-center gap-3 rounded-control px-3 py-2.5 text-sm font-medium text-nav-text transition-colors hover:bg-white/10 hover:text-white"
+            >
+              <app-icon [name]="item.icon" [size]="19" />
+              {{ i18n.translate(item.labelKey) }}
+            </a>
+          </li>
+        }
+      </ul>
+    </nav>
+
+    <div class="border-t border-white/10 p-4">
+      <div class="flex items-center justify-between gap-2">
+        <app-badge tone="accent">{{ i18n.translate('common.preview') }}</app-badge>
+        <a
+          routerLink="/settings"
+          class="focus-ring grid size-9 place-items-center rounded-control text-nav-text transition-colors hover:bg-white/10 hover:text-white"
+          [attr.aria-label]="i18n.translate('common.settings')"
+        >
+          <app-icon name="settings" [size]="18" />
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <div class="flex min-h-dvh flex-col">
+    <header class="sticky top-0 z-30 border-b border-line bg-surface">
+      <div class="flex items-center gap-3 px-4 py-3 sm:px-6">
+        <button
+          type="button"
+          class="focus-ring grid size-10 flex-none place-items-center rounded-control border border-line text-ink lg:hidden"
+          [attr.aria-label]="i18n.translate('common.menu')"
+          [attr.aria-expanded]="menuOpen()"
+          aria-controls="basic-mobile-menu"
+          (click)="toggleMenu()"
+        >
+          <app-icon name="menu" [size]="20" />
+        </button>
+
+        <a routerLink="/basic" class="focus-ring flex items-center gap-2.5 lg:hidden">
+          <span class="basic-mark basic-mark--sm" aria-hidden="true">∑</span>
+          <span class="text-sm font-semibold text-ink">
+            {{ i18n.translate('experience.theme.basic') }}
+          </span>
+        </a>
+
+        <div class="hidden min-w-0 lg:block">
+          <p class="truncate text-sm font-semibold text-ink">{{ i18n.translate('basic.greeting') }}</p>
+          <p class="truncate text-xs text-muted">{{ i18n.translate('basic.welcome') }}</p>
+        </div>
+
+        <div class="ms-auto flex items-center gap-2">
+          <span class="streak-chip" [attr.aria-label]="i18n.translate('basic.streak.title')">
+            <app-icon name="flame" [size]="16" />
+            <span class="tabular-nums">0</span>
+          </span>
+          <app-language-switch />
+          <a
+            routerLink="/profile"
+            class="focus-ring grid size-10 place-items-center rounded-full bg-subtle text-muted transition-colors hover:text-ink"
+            [attr.aria-label]="i18n.translate('common.profile')"
+          >
+            <app-icon name="user" [size]="19" />
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main id="main-content" tabindex="-1" class="flex-1 pb-24 lg:pb-0">
+      <router-outlet />
+    </main>
+
+    <nav
+      class="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-1.5 lg:hidden"
+      [attr.aria-label]="i18n.translate('basic.nav.label')"
+    >
+      <div class="mx-auto flex max-w-lg items-stretch justify-between gap-1">
+        @for (item of mobileNav; track item.path) {
+          <a
+            [routerLink]="item.path"
+            routerLinkActive="text-accent"
+            [routerLinkActiveOptions]="{ exact: item.exact }"
+            ariaCurrentWhenActive="page"
+            class="focus-ring flex min-h-14 flex-1 flex-col items-center justify-center gap-1 rounded-control px-1 py-1 text-[0.6875rem] font-semibold text-muted transition-colors hover:text-ink"
+          >
+            <app-icon [name]="item.icon" [size]="21" />
+            <span class="truncate">{{ i18n.translate(item.labelKey) }}</span>
+          </a>
+        }
+      </div>
+    </nav>
+  </div>
+
+  @if (menuOpen()) {
+    <div class="fixed inset-0 z-50 lg:hidden">
+      <button
+        type="button"
+        class="absolute inset-0 bg-black/45"
+        [attr.aria-label]="i18n.translate('common.close')"
+        (click)="closeMenu()"
+      ></button>
+      <aside
+        id="basic-mobile-menu"
+        class="relative flex h-full w-[min(20rem,88vw)] flex-col bg-nav text-nav-text shadow-float"
+        role="dialog"
+        aria-modal="true"
+        [attr.aria-label]="i18n.translate('basic.nav.label')"
+      >
+        <div class="flex items-center justify-between border-b border-white/10 px-4 py-4">
+          <span class="flex items-center gap-2.5">
+            <span class="basic-mark basic-mark--sm" aria-hidden="true">∑</span>
+            <span class="text-sm font-semibold text-white">
+              {{ i18n.translate('experience.theme.basic') }}
+            </span>
+          </span>
+          <button
+            type="button"
+            class="focus-ring grid size-9 place-items-center rounded-control text-nav-text hover:bg-white/10 hover:text-white"
+            [attr.aria-label]="i18n.translate('common.close')"
+            (click)="closeMenu()"
+          >
+            <app-icon name="x" [size]="20" />
+          </button>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto px-3 py-4" [attr.aria-label]="i18n.translate('basic.nav.label')">
+          <ul class="space-y-1">
+            @for (item of navItems; track item.path) {
+              <li>
+                <a
+                  [routerLink]="item.path"
+                  routerLinkActive="bg-nav-active text-white"
+                  [routerLinkActiveOptions]="{ exact: item.exact }"
+                  ariaCurrentWhenActive="page"
+                  class="focus-ring flex items-center gap-3 rounded-control px-3 py-3 text-sm font-medium text-nav-text transition-colors hover:bg-white/10 hover:text-white"
+                  (click)="closeMenu()"
+                >
+                  <app-icon [name]="item.icon" [size]="20" />
+                  {{ i18n.translate(item.labelKey) }}
+                </a>
+              </li>
+            }
+          </ul>
+        </nav>
+
+        <div class="border-t border-white/10 px-4 py-4">
+          <a
+            routerLink="/settings"
+            class="focus-ring flex items-center gap-3 rounded-control px-2 py-2 text-sm font-medium text-nav-text hover:text-white"
+            (click)="closeMenu()"
+          >
+            <app-icon name="settings" [size]="18" />
+            {{ i18n.translate('common.settings') }}
+          </a>
+        </div>
+      </aside>
+    </div>
+  }
+</div>

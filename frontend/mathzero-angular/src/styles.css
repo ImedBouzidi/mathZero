@@ -1,0 +1,7 @@
+@import 'tailwindcss';
+@import './styles/tokens/base.css';
+@import './styles/tokens/themes/primary.css';
+@import './styles/tokens/themes/basic.css';
+@import './styles/tokens/themes/secondary.css';
+@import './styles/base.css';
+@import './styles/components.css';

@@ -1,0 +1,60 @@
+<div class="flex min-h-dvh flex-col">
+  <a class="skip-link" href="#main-content">{{ i18n.translate('nav.skip') }}</a>
+
+  <header class="sticky top-0 z-40 border-b border-ink-600/70 bg-ink-900/85 backdrop-blur">
+    <div class="mx-auto flex w-full max-w-6xl items-center gap-3 px-4 py-3 sm:gap-6 sm:px-6">
+      <a
+        routerLink="/"
+        class="flex min-w-0 items-center gap-3 rounded-control"
+        [attr.aria-label]="i18n.translate('app.name')"
+      >
+        <span class="brand-mark" aria-hidden="true">∑</span>
+        <span class="flex min-w-0 flex-col leading-tight">
+          <span class="truncate text-sm font-semibold tracking-tight sm:text-base">
+            Mathematics <span class="text-violet-400">Zero to Hero</span>
+          </span>
+          <span class="hidden truncate text-xs text-mist-400 sm:block">
+            {{ i18n.translate('app.tagline') }}
+          </span>
+        </span>
+      </a>
+
+      <nav
+        class="ms-auto hidden items-center gap-2 sm:flex"
+        [attr.aria-label]="i18n.translate('nav.label')"
+      >
+        <a
+          routerLink="/"
+          routerLinkActive="bg-ink-700 text-mist-50"
+          [routerLinkActiveOptions]="{ exact: true }"
+          ariaCurrentWhenActive="page"
+          class="rounded-control px-3 py-2 text-sm text-mist-300 transition-colors hover:text-mist-100"
+        >
+          {{ i18n.translate('nav.home') }}
+        </a>
+        <span
+          class="rounded-full border border-violet-500/30 bg-violet-500/10 px-2.5 py-1 text-[0.6875rem] font-semibold uppercase tracking-wider text-violet-300"
+        >
+          {{ i18n.translate('nav.phase') }}
+        </span>
+      </nav>
+
+      <div class="ms-auto sm:ms-0">
+        <app-language-switch />
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" tabindex="-1" class="flex-1">
+    <router-outlet />
+  </main>
+
+  <footer class="border-t border-ink-600/60 bg-ink-950/40">
+    <div
+      class="mx-auto flex w-full max-w-6xl flex-col gap-2 px-4 py-6 text-xs text-mist-500 sm:flex-row sm:items-center sm:justify-between sm:px-6"
+    >
+      <p>{{ i18n.translate('footer.note') }}</p>
+      <p dir="ltr">Mathematics Zero to Hero · 2026</p>
+    </div>
+  </footer>
+</div>

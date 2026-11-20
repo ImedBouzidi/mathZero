@@ -1,0 +1,148 @@
+<section
+  class="mx-auto w-full max-w-6xl px-4 pb-16 pt-12 sm:px-6 sm:pb-24 sm:pt-20"
+  [attr.aria-labelledby]="'home-title'"
+>
+  <div class="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
+    <div>
+      <p
+        class="inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-violet-300"
+      >
+        {{ i18n.translate('home.eyebrow') }}
+      </p>
+
+      <h1
+        id="home-title"
+        class="mt-5 max-w-2xl text-4xl font-bold leading-[1.08] tracking-tight text-mist-50 sm:text-5xl lg:text-6xl"
+      >
+        {{ i18n.translate('home.title') }}
+      </h1>
+
+      <p class="mt-5 max-w-2xl text-base leading-7 text-mist-300 sm:text-lg sm:leading-8">
+        {{ i18n.translate('home.intro') }}
+      </p>
+
+      <div class="formula-chip mt-9" dir="ltr">
+        <span class="formula-chip__label">{{ i18n.translate('home.formulaLabel') }}</span>
+        <span class="formula-chip__formula">f(x) = ax² + bx + c</span>
+      </div>
+    </div>
+
+    <app-card [title]="i18n.translate('home.status.title')">
+      @if (loading()) {
+        <div class="flex items-center gap-3" role="status" aria-live="polite">
+          <span class="status-dot status-dot--pending" aria-hidden="true"></span>
+          <span class="text-sm text-mist-300">{{ i18n.translate('home.status.checking') }}</span>
+        </div>
+      } @else if (health(); as gateway) {
+        <div class="flex items-center gap-3" role="status">
+          <span class="status-dot status-dot--up" aria-hidden="true"></span>
+          <span class="text-sm font-semibold text-emerald-400">
+            {{ i18n.translate('home.status.up') }}
+          </span>
+        </div>
+
+        <dl class="mt-5 space-y-2 text-sm">
+          <div class="flex items-baseline justify-between gap-4 border-t border-ink-600/60 pt-2">
+            <dt class="text-mist-400">{{ i18n.translate('home.status.service') }}</dt>
+            <dd class="font-mono text-mist-100">{{ gateway.service }}</dd>
+          </div>
+          <div class="flex items-baseline justify-between gap-4 border-t border-ink-600/60 pt-2">
+            <dt class="text-mist-400">{{ i18n.translate('home.status.version') }}</dt>
+            <dd class="font-mono text-mist-100">{{ gateway.version }}</dd>
+          </div>
+          <div class="flex items-baseline justify-between gap-4 border-t border-ink-600/60 pt-2">
+            <dt class="text-mist-400">{{ i18n.translate('home.status.endpoint') }}</dt>
+            <dd class="max-w-[60%] truncate font-mono text-xs text-mist-300" dir="ltr">
+              {{ apiBaseUrl }}/health
+            </dd>
+          </div>
+        </dl>
+
+        <button appButton type="button" variant="ghost" size="sm" class="mt-4" (click)="refresh()">
+          {{ i18n.translate('home.status.retry') }}
+        </button>
+      } @else {
+        <div class="flex items-center gap-3" role="alert">
+          <span class="status-dot status-dot--down" aria-hidden="true"></span>
+          <span class="text-sm font-semibold text-danger-400">
+            {{ i18n.translate('home.status.down') }}
+          </span>
+        </div>
+
+        <p class="mt-4 text-sm leading-6 text-mist-300">
+          {{ i18n.translate('home.status.error') }}
+        </p>
+        <p class="mt-2 truncate font-mono text-xs text-mist-500" dir="ltr">
+          {{ apiBaseUrl }}/health
+        </p>
+
+        <button
+          appButton
+          type="button"
+          variant="secondary"
+          size="sm"
+          class="mt-4"
+          (click)="refresh()"
+        >
+          {{ i18n.translate('home.status.retry') }}
+        </button>
+      }
+    </app-card>
+  </div>
+
+  <h2 class="mt-16 text-lg font-semibold tracking-tight text-mist-100 sm:mt-20">
+    {{ i18n.translate('home.pillars.title') }}
+  </h2>
+
+  <div class="mt-4 grid gap-4 md:grid-cols-3">
+    <app-card>
+      <p class="pillar-index" aria-hidden="true">01</p>
+      <h3 class="mt-3 text-base font-semibold text-mist-50">
+        {{ i18n.translate('home.pillar.path.title') }}
+      </h3>
+      <p class="mt-2 text-sm leading-6 text-mist-400">
+        {{ i18n.translate('home.pillar.path.body') }}
+      </p>
+    </app-card>
+
+    <app-card>
+      <p class="pillar-index" aria-hidden="true">02</p>
+      <h3 class="mt-3 text-base font-semibold text-mist-50">
+        {{ i18n.translate('home.pillar.math.title') }}
+      </h3>
+      <p class="mt-2 text-sm leading-6 text-mist-400">
+        {{ i18n.translate('home.pillar.math.body') }}
+      </p>
+    </app-card>
+
+    <app-card>
+      <p class="pillar-index" aria-hidden="true">03</p>
+      <h3 class="mt-3 text-base font-semibold text-mist-50">
+        {{ i18n.translate('home.pillar.progress.title') }}
+      </h3>
+      <p class="mt-2 text-sm leading-6 text-mist-400">
+        {{ i18n.translate('home.pillar.progress.body') }}
+      </p>
+    </app-card>
+  </div>
+
+  <div class="mt-4 grid gap-4 md:grid-cols-2">
+    <app-card [title]="i18n.translate('home.phase.title')">
+      <ul class="space-y-3">
+        @for (item of phaseItems; track item) {
+          <li class="flex items-start gap-3 text-sm leading-6 text-mist-300">
+            <span
+              class="mt-2.5 size-1.5 shrink-0 rounded-full bg-emerald-400"
+              aria-hidden="true"
+            ></span>
+            <span>{{ i18n.translate(item) }}</span>
+          </li>
+        }
+      </ul>
+    </app-card>
+
+    <app-card [title]="i18n.translate('home.next.title')">
+      <p class="text-sm leading-6 text-mist-300">{{ i18n.translate('home.next.body') }}</p>
+    </app-card>
+  </div>
+</section>

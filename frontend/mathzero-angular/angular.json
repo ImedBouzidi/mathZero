@@ -1,0 +1,109 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "cli": {
+    "packageManager": "npm",
+    "schematicCollections": [
+      "angular-eslint"
+    ],
+    "analytics": false
+  },
+  "newProjectRoot": "projects",
+  "projects": {
+    "mathzero-angular": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "src/main.ts",
+            "tsConfig": "tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
+            ],
+            "styles": [
+              "node_modules/@fontsource-variable/inter/index.css",
+              "node_modules/@fontsource/noto-sans-arabic/arabic-400.css",
+              "node_modules/@fontsource/noto-sans-arabic/arabic-500.css",
+              "node_modules/@fontsource/noto-sans-arabic/arabic-600.css",
+              "node_modules/@fontsource/noto-sans-arabic/arabic-700.css",
+              "node_modules/@fontsource/fredoka/latin-600.css",
+              "node_modules/@fontsource/fredoka/latin-700.css",
+              "node_modules/@fontsource/baloo-bhaijaan-2/arabic-600.css",
+              "node_modules/@fontsource/baloo-bhaijaan-2/arabic-700.css",
+              "node_modules/@fontsource-variable/outfit/wght.css",
+              "node_modules/@fontsource/crimson-pro/latin-600.css",
+              "node_modules/@fontsource/crimson-pro/latin-700.css",
+              "node_modules/@fontsource/noto-naskh-arabic/arabic-600.css",
+              "node_modules/@fontsource/noto-naskh-arabic/arabic-700.css",
+              "node_modules/katex/dist/katex.min.css",
+              "src/styles.css"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.production.ts"
+                }
+              ],
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "mathzero-angular:build:production"
+            },
+            "development": {
+              "buildTarget": "mathzero-angular:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
+          }
+        }
+      }
+    }
+  }
+}

@@ -12,6 +12,7 @@ interface PrimaryNavItem {
   readonly path: string;
   readonly labelKey:
     | 'primary.nav.map'
+    | 'primary.nav.chapters'
     | 'primary.nav.missions'
     | 'primary.nav.rewards'
     | 'primary.nav.me';
@@ -35,6 +36,12 @@ export class PrimaryShell {
 
   protected readonly navItems: readonly PrimaryNavItem[] = [
     { path: '/primary', labelKey: 'primary.nav.map', icon: 'map', exact: true },
+    {
+      path: '/primary/lessons',
+      labelKey: 'primary.nav.chapters',
+      icon: 'book-open',
+      exact: false,
+    },
     {
       path: '/primary/exercises',
       labelKey: 'primary.nav.missions',

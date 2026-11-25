@@ -3,12 +3,15 @@
 This catalog is the single reference for service boundaries, data ownership and
 local ports. A service is only created when its implementation phase begins.
 
-## Implemented services (Phase 1)
+## Implemented services (Phases 1–3 and Phase 4A foundation)
 
 | Service | Responsibility | Owns data | Port | Dependencies | Status |
 |---|---|---|---|---|---|
 | `eureka-server` | Service registration and discovery | None | 8761 | — | Implemented |
 | `gateway-service` | Public API entry point, routing, CORS, request correlation, token relay later | No business database | 8090 | Eureka | Implemented |
+| `identity-service` | Registration, login, password lifecycle, refresh sessions, roles, profile basics | `identity_db` | 8091 | Gateway | Implemented |
+| `curriculum-service` | Versioned curricula, school structure, grade mappings, subjects, chapters, skills, prerequisites, and audit history | `curriculum_db` | 8082 | Gateway, Eureka, PostgreSQL | Implemented |
+| `resource-service` | Learning-resource curation, license attribution, ADMIN review, and offline generation of animated lessons/quizzes; Wikimedia, OpenStax, GeoGebra and PhET adapters are opt-in, others scaffolded | `resource_db` | 8089 | Gateway, Eureka, PostgreSQL | Phase 4A foundation |
 
 The Gateway runs on **8090** locally because 8080 is commonly occupied by
 unrelated tools. Override with `GATEWAY_PORT`; if changed, update
@@ -18,10 +21,7 @@ unrelated tools. Override with `GATEWAY_PORT`; if changed, update
 
 | Service | Responsibility | Owns data | Port | Phase | Depends on |
 |---|---|---|---|---|---|
-| `identity-service` | Registration, login, password lifecycle, refresh sessions, roles, profile basics | `identity_db` | 8081 | 2 | Gateway |
-| `curriculum-service` | Curriculum versions, levels, grades, specializations, subjects, chapters, skills, prerequisites | `curriculum_db` | 8082 | 3 | Gateway, identity (admin auth) |
 | `content-service` | Original lessons, translations, activities, editorial workflow, publication versions | `content_db` | 8083 | 4 | Gateway, curriculum references, identity |
-| `resource-service` | External provider adapters, normalized metadata, caching, licences, attribution, review | `resource_db` | 8089 | 4A | Gateway, identity, external providers |
 | `math-service` | Safe parsing/evaluation and visualization configuration validation; stateless initially | None initially | 8087 | 5 | None |
 | `exercise-service` | Exercise definitions, answer specifications, attempts, validation | `exercise_db` | 8084 | 6 | Gateway, curriculum references, math rules |
 | `learning-service` | Learning paths, lesson progress, mastery, revision schedule, recommendations | `learning_db` | 8085 | 7 | Events from content/exercise, identity |

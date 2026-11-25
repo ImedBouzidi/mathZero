@@ -8,10 +8,20 @@ import { AppCard } from '../../../design-system/card/app-card';
 import { AppEmptyState } from '../../../design-system/empty-state/app-empty-state';
 import { AppIcon } from '../../../design-system/icon/app-icon';
 import { AppPageHeader } from '../../../design-system/page-header/app-page-header';
+import { LevelResources } from '../../../shared/ui/level-resources/level-resources';
 
 @Component({
   selector: 'app-secondary-dashboard',
-  imports: [RouterLink, AppBadge, AppButton, AppCard, AppEmptyState, AppIcon, AppPageHeader],
+  imports: [
+    RouterLink,
+    AppBadge,
+    AppButton,
+    AppCard,
+    AppEmptyState,
+    AppIcon,
+    AppPageHeader,
+    LevelResources,
+  ],
   template: `
     <section
       class="secondary-overview mx-auto w-full max-w-[var(--content-max)] px-4 py-8 sm:px-6 sm:py-10"
@@ -99,6 +109,10 @@ import { AppPageHeader } from '../../../design-system/page-header/app-page-heade
                 <app-icon name="arrow-right" [size]="16" />
               </a>
             </app-empty-state>
+          </app-card>
+
+          <app-card [title]="i18n.translate('resources.forLevel')" heading="h2">
+            <app-level-resources [cycle]="'SECONDARY'" />
           </app-card>
         </div>
       </div>

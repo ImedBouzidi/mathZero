@@ -60,6 +60,7 @@ export const ICON_PATHS = {
   notebook:
     '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8"/><path d="M8 11h8"/><path d="M8 15h5"/>',
   play: '<path d="M8 5 19 12 8 19z"/>',
+  pause: '<path d="M8 5v14"/><path d="M16 5v14"/>',
   plus: '<path d="M12 5v14"/><path d="M5 12h14"/>',
   puzzle:
     '<path d="M19 13h-2.2a2 2 0 1 1 0-4H19V5a2 2 0 0 0-2-2h-4v2.2a2 2 0 1 1-4 0V3H5a2 2 0 0 0-2 2v4h2.2a2 2 0 1 1 0 4H3v4a2 2 0 0 0 2 2h4v-2.2a2 2 0 1 1 4 0V19h4a2 2 0 0 0 2-2z"/>',

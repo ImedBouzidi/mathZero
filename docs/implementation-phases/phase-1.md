@@ -53,10 +53,10 @@
 
 ## Verification commands and results
 
-> Environment note: the machine used for verification had a JRE-only system
-> JDK 21. Maven compiled with `--release 21` using a full JDK toolchain, and the
-> packaged services were executed on Java 21. A standard developer machine only
-> needs `JAVA_HOME` pointing at a full JDK 21+.
+> Historical environment note: this phase was verified with Java 21. Maven
+> compiled with `--release 21` using a full JDK toolchain, and the packaged
+> services were executed on Java 21. The current project baseline is Java 17;
+> developers need `JAVA_HOME` pointing at a full JDK 17+.
 
 ```text
 $ cd backend && mvn test

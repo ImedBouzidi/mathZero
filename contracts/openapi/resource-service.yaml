@@ -1,0 +1,714 @@
+openapi: 3.1.0
+info:
+  title: Mathematics Zero to Hero — Resource API
+  version: 0.1.0
+  description: |
+    Manually curated learning resources with license attribution and an
+    administrator-controlled review workflow. Wikimedia, OpenStax, GeoGebra and
+    PhET search returns curation candidates only; resources are never published
+    automatically. Approval also generates an offline animated lesson and quiz
+    for the resource; correct answers are never returned with the lesson.
+servers:
+  - url: http://localhost:8090/api/v1
+    description: Local development Gateway
+tags:
+  - name: Resources
+  - name: Resource administration
+  - name: Learning
+paths:
+  /resources:
+    get:
+      tags: [Resources]
+      operationId: listApprovedResources
+      summary: List approved resources
+      parameters:
+        - name: search
+          in: query
+          schema: { type: string, maxLength: 255 }
+        - name: language
+          in: query
+          schema: { type: string, enum: [fr, ar] }
+        - name: gradeCode
+          in: query
+          schema: { type: string, maxLength: 80 }
+        - name: subjectCode
+          in: query
+          schema: { type: string, maxLength: 80 }
+        - name: cycle
+          in: query
+          description: Experience cycle. Omit to list every cycle.
+          schema: { type: string, enum: [PRIMARY, BASIC, SECONDARY] }
+        - name: page
+          in: query
+          schema: { type: integer, minimum: 0, default: 0 }
+        - name: size
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+      responses:
+        "200":
+          description: A page of approved resources with license attribution
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResourcePageEnvelope"
+  /learning/lessons/{resourceId}:
+    get:
+      tags: [Learning]
+      operationId: getGeneratedLesson
+      summary: Get the animated lesson and quiz for an approved resource
+      description: >-
+        Content is generated deterministically and offline when a resource is
+        approved (or on first read for older approved resources). Steps and
+        questions are returned without correct answers. Public endpoint.
+      parameters:
+        - $ref: "#/components/parameters/ResourceId"
+      responses:
+        "200":
+          description: Lesson steps and quiz questions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LessonEnvelope"
+        "404": { description: Resource not found or not approved }
+  /learning/lessons/{resourceId}/answers:
+    post:
+      tags: [Learning]
+      operationId: answerLessonQuestion
+      summary: Submit one quiz answer and reveal the result
+      description: >-
+        The correct answer is stored server-side and is only returned by this
+        endpoint after the learner submits an option. Public endpoint.
+      parameters:
+        - $ref: "#/components/parameters/ResourceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnswerRequest"
+      responses:
+        "200":
+          description: Whether the answer was correct, with the explanation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnswerEnvelope"
+        "400": { description: Invalid question or option }
+        "404": { description: Resource or generated lesson not found }
+  /learning/curriculum/cycles:
+    get:
+      tags: [Learning]
+      operationId: listCurriculumCycles
+      summary: List the three experience cycles with their grades and chapters
+      responses:
+        "200":
+          description: Primary, basic and secondary catalogues in display order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurriculumCyclesEnvelope"
+  /learning/curriculum/grades/{gradeCode}:
+    get:
+      tags: [Learning]
+      operationId: getCurriculumGradeCatalog
+      summary: Get chapters and exercises for one Tunisian school grade
+      parameters:
+        - name: gradeCode
+          in: path
+          required: true
+          schema: { type: string, enum: [P1, P2, P3, P4, P5, P6, B7, B8, B9, S1, S2, S3, S4] }
+      responses:
+        "200":
+          description: Grade curriculum catalog
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurriculumGradeEnvelope"
+        "404": { description: Unknown grade code }
+  /learning/curriculum/grades/{gradeCode}/answers:
+    post:
+      tags: [Learning]
+      operationId: answerCurriculumCatalogExercise
+      summary: Submit a curriculum catalog exercise answer
+      parameters:
+        - name: gradeCode
+          in: path
+          required: true
+          schema: { type: string, enum: [P1, P2, P3, P4, P5, P6, B7, B8, B9, S1, S2, S3, S4] }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CatalogAnswerRequest"
+      responses:
+        "200":
+          description: Catalog exercise answer result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CatalogAnswerEnvelope"
+        "400": { description: Invalid exercise or option }
+        "404": { description: Unknown grade or exercise }
+  /admin/resources:
+    get:
+      tags: [Resource administration]
+      operationId: listResourcesForReview
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string, enum: [DRAFT, SUBMITTED, APPROVED, REJECTED] }
+        - name: page
+          in: query
+          schema: { type: integer, minimum: 0, default: 0 }
+        - name: size
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+      responses:
+        "200":
+          description: Resources available to an administrator
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminResourcePageEnvelope"
+        "401": { description: Authentication required }
+        "403": { description: ADMIN role required }
+    post:
+      tags: [Resource administration]
+      operationId: createManualResource
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateManualResource"
+      responses:
+        "201":
+          description: Resource stored as a draft
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminResourceEnvelope"
+        "400": { description: Invalid request or non-HTTPS URL }
+        "401": { description: Authentication required }
+        "403": { description: ADMIN role required }
+  /admin/resources/search:
+    get:
+      tags: [Resource administration]
+      operationId: searchProviderResources
+      summary: Search provider candidates for manual curation
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema: { type: string, minLength: 1, maxLength: 200 }
+        - name: limit
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 50, default: 10 }
+        - name: language
+          in: query
+          description: >-
+            Preferred language for provider search. Wikimedia uses it to pick a
+            language edition, GeoGebra passes it to material search, and PhET
+            uses it for localized simulation metadata. OpenStax results are
+            English-language and are stored as such.
+          schema: { type: string, enum: [fr, ar], default: fr }
+      responses:
+        "200":
+          description: Search candidates that require manual rights review
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProviderSearchResultsEnvelope"
+        "401": { description: Authentication required }
+        "403": { description: ADMIN role required }
+  /admin/resources/suggestions:
+    get:
+      tags: [Resource administration]
+      operationId: listResourceSuggestions
+      summary: Enabled provider candidates pre-sorted into experience cycles
+      description: Results from Wikimedia, OpenStax, GeoGebra and PhET are generated from configured topic queries and cached briefly. Disabled providers contribute nothing. They are not published until approved.
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: Suggestions grouped by cycle through the cycle field
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuggestionListEnvelope"
+        "401": { description: Authentication required }
+        "403": { description: ADMIN role required }
+  /admin/resources/suggestions/approve:
+    post:
+      tags: [Resource administration]
+      operationId: approveResourceSuggestion
+      summary: Publish one suggestion with a single administrator decision
+      description: The suggestion must still exist on the current board. The approval is audited, the resource is immediately visible in the matching cycle dashboard, and its animated lesson/quiz is generated before the response is returned.
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApproveSuggestionRequest"
+      responses:
+        "200":
+          description: Approved resource
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminResourceEnvelope"
+        "400": { description: Suggestion is no longer available }
+        "401": { description: Authentication required }
+        "403": { description: ADMIN role required }
+  /admin/resources/providers/import:
+    post:
+      tags: [Resource administration]
+      operationId: importProviderResource
+      summary: Import a selected provider result as a draft for review
+      description: >-
+        The server re-runs the provider search and only accepts a URL returned by
+        that same provider's search. Each adapter records its own license,
+        attribution, language and resource type; clients cannot supply rights
+        metadata. Disabled providers cannot be imported. No resource is published
+        without the normal review transition to APPROVED.
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImportProviderResource"
+      responses:
+        "201":
+          description: Draft stored (or the existing draft reused) in the review queue
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminResourceEnvelope"
+        "400": { description: Invalid request or result unavailable }
+        "401": { description: Authentication required }
+        "403": { description: ADMIN role required }
+  /admin/resources/{resourceId}/review:
+    post:
+      tags: [Resource administration]
+      operationId: reviewResource
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: "#/components/parameters/ResourceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewRequest"
+      responses:
+        "200":
+          description: Updated resource review state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminResourceEnvelope"
+        "409": { description: Review transition is not allowed }
+  /admin/resources/{resourceId}/reviews:
+    get:
+      tags: [Resource administration]
+      operationId: getResourceReviewHistory
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: "#/components/parameters/ResourceId"
+      responses:
+        "200":
+          description: Audit history for the resource
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReviewHistoryEnvelope"
+  /admin/resources/providers:
+    get:
+      tags: [Resource administration]
+      operationId: listProviderStatus
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: Provider scaffold status without credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProviderListEnvelope"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT with ADMIN role for administrative operations.
+  parameters:
+    ResourceId:
+      name: resourceId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+  schemas:
+    Meta:
+      type: object
+      required: [requestId]
+      properties:
+        requestId: { type: string }
+    ResourcePage:
+      type: object
+      required: [items, page, size, totalElements, totalPages]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Resource" }
+        page: { type: integer }
+        size: { type: integer }
+        totalElements: { type: integer, format: int64 }
+        totalPages: { type: integer }
+    Resource:
+      type: object
+      required: [id, title, url, language, resourceType, cycle, licenceCode, licenceName, licenceUrl, attributionText]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string }
+        description: { type: [string, "null"] }
+        url: { type: string, format: uri }
+        language: { type: string, enum: [fr, ar] }
+        resourceType: { type: string, enum: [ARTICLE, AUDIO, DOCUMENT, IMAGE, INTERACTIVE, OTHER, VIDEO] }
+        cycle: { type: [string, "null"], enum: [PRIMARY, BASIC, SECONDARY, null] }
+        gradeCode: { type: [string, "null"] }
+        subjectCode: { type: [string, "null"] }
+        topic: { type: [string, "null"] }
+        licenceCode: { type: string }
+        licenceName: { type: string }
+        licenceUrl: { type: string, format: uri }
+        attributionText: { type: string }
+        attributionUrl: { type: [string, "null"], format: uri }
+    AdminResource:
+      allOf:
+        - $ref: "#/components/schemas/Resource"
+        - type: object
+          required: [provider, reviewStatus, createdBy, createdAt, updatedAt]
+          properties:
+            provider: { type: string }
+            reviewStatus: { type: string, enum: [DRAFT, SUBMITTED, APPROVED, REJECTED] }
+            reviewNotes: { type: [string, "null"] }
+            createdBy: { type: [string, "null"], format: uuid }
+            verifiedAt: { type: [string, "null"], format: date-time }
+            createdAt: { type: string, format: date-time }
+            updatedAt: { type: string, format: date-time }
+    CreateManualResource:
+      type: object
+      required: [title, url, language, resourceType, cycle, licenceCode, licenceName, licenceUrl, attributionText]
+      properties:
+        title: { type: string, maxLength: 500 }
+        url: { type: string, format: uri, description: Must use HTTPS }
+        description: { type: [string, "null"], maxLength: 4000 }
+        language: { type: string, enum: [fr, ar] }
+        resourceType: { type: string, enum: [ARTICLE, AUDIO, DOCUMENT, IMAGE, INTERACTIVE, OTHER, VIDEO] }
+        cycle: { type: string, enum: [PRIMARY, BASIC, SECONDARY] }
+        gradeCode: { type: [string, "null"], maxLength: 80 }
+        subjectCode: { type: [string, "null"], maxLength: 80 }
+        topic: { type: [string, "null"], maxLength: 255 }
+        licenceCode: { type: string, maxLength: 80 }
+        licenceName: { type: string, maxLength: 180 }
+        licenceUrl: { type: string, format: uri }
+        attributionText: { type: string, maxLength: 4000 }
+        attributionUrl: { type: [string, "null"], format: uri }
+    ImportProviderResource:
+      type: object
+      required: [provider, query, resultUrl, language, cycle]
+      properties:
+        provider: { type: string, enum: [WIKIMEDIA, OPENSTAX, GEOGEBRA, PHET] }
+        query: { type: string, minLength: 1, maxLength: 200 }
+        resultUrl: { type: string, format: uri, description: Must match a URL from the provider search }
+        language: { type: string, enum: [fr, ar] }
+        cycle: { type: string, enum: [PRIMARY, BASIC, SECONDARY] }
+    ReviewRequest:
+      type: object
+      required: [action]
+      properties:
+        action: { type: string, enum: [SUBMIT, APPROVE, REJECT] }
+        notes: { type: [string, "null"], maxLength: 4000 }
+    ProviderDescriptor:
+      type: object
+      required: [provider, status, configured, note]
+      properties:
+        provider: { type: string }
+        status: { type: string }
+        configured: { type: boolean }
+        note: { type: string }
+    ProviderSearchResult:
+      type: object
+      required: [title, url, snippet, source]
+      properties:
+        title: { type: string }
+        url: { type: string, format: uri }
+        snippet: { type: string }
+        source: { type: string }
+    Suggestion:
+      type: object
+      required: [provider, cycle, language, query, title, url, snippet, source]
+      properties:
+        provider: { type: string, enum: [WIKIMEDIA, OPENSTAX, GEOGEBRA, PHET] }
+        cycle: { type: string, enum: [PRIMARY, BASIC, SECONDARY] }
+        language: { type: string, enum: [fr, ar, en] }
+        query: { type: string }
+        title: { type: string }
+        url: { type: string, format: uri }
+        snippet: { type: string }
+        source: { type: string }
+    SuggestionList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Suggestion" }
+    ApproveSuggestionRequest:
+      type: object
+      required: [provider, cycle, language, query, resultUrl]
+      properties:
+        provider: { type: string, enum: [WIKIMEDIA, OPENSTAX, GEOGEBRA, PHET] }
+        cycle: { type: string, enum: [PRIMARY, BASIC, SECONDARY] }
+        language: { type: string, enum: [fr, ar, en] }
+        query: { type: string, minLength: 1, maxLength: 200 }
+        resultUrl: { type: string, format: uri }
+    LessonStep:
+      type: object
+      required: [kind, title, body]
+      properties:
+        kind: { type: string, enum: [intro, concept, example, source, practice] }
+        title: { type: string }
+        body: { type: string }
+        formula: { type: [string, "null"], description: LaTeX expression when applicable }
+    DemoFrame:
+      type: object
+      required: [label, narration, left, right, progress]
+      properties:
+        label: { type: string }
+        narration: { type: string }
+        formula: { type: [string, "null"], description: LaTeX expression when applicable }
+        left: { type: string, description: Symbolic state before this step }
+        right: { type: string, description: Symbolic state after this step }
+        progress: { type: integer, minimum: 0, maximum: 100 }
+    Demo:
+      type: object
+      required: [kind, title, frames]
+      properties:
+        kind: { type: string, enum: [FRACTIONS, EQUATION, GEOMETRY, FUNCTION, TRIGONOMETRY, ARITHMETIC, GENERAL, SOLUTION] }
+        title: { type: string }
+        frames:
+          type: array
+          items: { $ref: "#/components/schemas/DemoFrame" }
+      description: Replayable animated worked demonstration. No hidden answer until a solution is requested after submission.
+    LessonExercise:
+      type: object
+      required: [id, prompt, options, hint]
+      properties:
+        id: { type: string }
+        prompt: { type: string }
+        options:
+          type: array
+          items: { type: string }
+        hint: { type: string }
+    Lesson:
+      type: object
+      required: [resourceId, title, language, sourceUrl, licenceName, attributionText, steps, demo, exercises]
+      properties:
+        resourceId: { type: string, format: uuid }
+        title: { type: string }
+        summary: { type: [string, "null"] }
+        language: { type: string, enum: [fr, ar] }
+        cycle: { type: [string, "null"], enum: [PRIMARY, BASIC, SECONDARY, null] }
+        sourceUrl: { type: string, format: uri }
+        licenceName: { type: string }
+        attributionText: { type: string }
+        steps:
+          type: array
+          items: { $ref: "#/components/schemas/LessonStep" }
+        demo: { type: [object, "null"], allOf: [{ $ref: "#/components/schemas/Demo" }] }
+        exercises:
+          type: array
+          items: { $ref: "#/components/schemas/LessonExercise" }
+      description: Generated lesson payload. It deliberately contains no correct answers.
+    AnswerRequest:
+      type: object
+      required: [questionId, optionIndex]
+      properties:
+        questionId: { type: string }
+        optionIndex: { type: integer, minimum: 0, maximum: 5 }
+    AnswerResult:
+      type: object
+      required: [correct, correctAnswer, explanation, position, total, solution]
+      properties:
+        correct: { type: boolean }
+        correctAnswer: { type: string }
+        explanation: { type: string }
+        position: { type: integer }
+        total: { type: integer }
+        solution: { type: [object, "null"], allOf: [{ $ref: "#/components/schemas/Demo" }] }
+    LessonEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data: { $ref: "#/components/schemas/Lesson" }
+        meta: { $ref: "#/components/schemas/Meta" }
+    CatalogExercise:
+      type: object
+      required: [id, prompt, options, hint, promptAr, optionsAr, hintAr]
+      properties:
+        id: { type: string }
+        prompt: { type: string }
+        options: { type: array, items: { type: string } }
+        hint: { type: string }
+        promptAr: { type: string }
+        optionsAr: { type: array, items: { type: string } }
+        hintAr: { type: string }
+    CatalogChapter:
+      type: object
+      required: [id, title, description, titleAr, descriptionAr, steps, exercises]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        description: { type: string }
+        titleAr: { type: string }
+        descriptionAr: { type: string }
+        steps:
+          type: array
+          items: { $ref: "#/components/schemas/LessonStep" }
+        exercises:
+          type: array
+          items: { $ref: "#/components/schemas/CatalogExercise" }
+    CurriculumGradeCatalog:
+      type: object
+      required: [gradeCode, gradeName, gradeNameAr, cycle, draft, reviewNote, chapters]
+      properties:
+        gradeCode: { type: string }
+        gradeName: { type: string }
+        gradeNameAr: { type: string }
+        cycle: { type: string, enum: [PRIMARY, BASIC, SECONDARY] }
+        draft: { type: boolean }
+        reviewNote: { type: string }
+        chapters:
+          type: array
+          items: { $ref: "#/components/schemas/CatalogChapter" }
+    CurriculumCycleCatalog:
+      type: object
+      required: [cycle, nameFr, nameAr, grades]
+      properties:
+        cycle: { type: string, enum: [PRIMARY, BASIC, SECONDARY] }
+        nameFr: { type: string }
+        nameAr: { type: string }
+        grades:
+          type: array
+          items: { $ref: "#/components/schemas/CurriculumGradeCatalog" }
+    CurriculumGradeEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data: { $ref: "#/components/schemas/CurriculumGradeCatalog" }
+        meta: { $ref: "#/components/schemas/Meta" }
+    CurriculumCyclesEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items: { $ref: "#/components/schemas/CurriculumCycleCatalog" }
+        meta: { $ref: "#/components/schemas/Meta" }
+    CatalogAnswerRequest:
+      type: object
+      required: [exerciseId, optionIndex]
+      properties:
+        exerciseId: { type: string }
+        optionIndex: { type: integer, minimum: 0, maximum: 5 }
+    CatalogAnswerResult:
+      type: object
+      required: [correct, correctAnswer, explanation]
+      properties:
+        correct: { type: boolean }
+        correctAnswer: { type: string }
+        explanation: { type: string }
+    CatalogAnswerEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data: { $ref: "#/components/schemas/CatalogAnswerResult" }
+        meta: { $ref: "#/components/schemas/Meta" }
+    AnswerEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data: { $ref: "#/components/schemas/AnswerResult" }
+        meta: { $ref: "#/components/schemas/Meta" }
+    SuggestionListEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data: { $ref: "#/components/schemas/SuggestionList" }
+        meta: { $ref: "#/components/schemas/Meta" }
+    ResourcePageEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data: { $ref: "#/components/schemas/ResourcePage" }
+        meta: { $ref: "#/components/schemas/Meta" }
+    AdminResourcePageEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          allOf:
+            - $ref: "#/components/schemas/ResourcePage"
+            - properties:
+                items:
+                  type: array
+                  items: { $ref: "#/components/schemas/AdminResource" }
+        meta: { $ref: "#/components/schemas/Meta" }
+    AdminResourceEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data: { $ref: "#/components/schemas/AdminResource" }
+        meta: { $ref: "#/components/schemas/Meta" }
+    ReviewHistoryEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            required: [id, reviewerId, decision, reviewedAt]
+            properties:
+              id: { type: string, format: uuid }
+              reviewerId: { type: string, format: uuid }
+              decision: { type: string, enum: [SUBMIT, APPROVE, REJECT] }
+              notes: { type: [string, "null"] }
+              reviewedAt: { type: string, format: date-time }
+        meta: { $ref: "#/components/schemas/Meta" }
+    ProviderListEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: object
+          required: [providers]
+          properties:
+            providers:
+              type: array
+              items: { $ref: "#/components/schemas/ProviderDescriptor" }
+        meta: { $ref: "#/components/schemas/Meta" }
+    ProviderSearchResultsEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items: { $ref: "#/components/schemas/ProviderSearchResult" }
+        meta: { $ref: "#/components/schemas/Meta" }

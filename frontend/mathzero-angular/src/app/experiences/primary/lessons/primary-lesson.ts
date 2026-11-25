@@ -4,27 +4,27 @@ import { RouterLink } from '@angular/router';
 import { LanguageService } from '../../../core/i18n/language.service';
 import { AppButton } from '../../../design-system/button/app-button';
 import { AppCard } from '../../../design-system/card/app-card';
-import { AppEmptyState } from '../../../design-system/empty-state/app-empty-state';
 import { AppIcon } from '../../../design-system/icon/app-icon';
 import { AppPageHeader } from '../../../design-system/page-header/app-page-header';
+import { CycleChapters } from '../../../shared/ui/cycle-chapters/cycle-chapters';
 
 @Component({
   selector: 'app-primary-lesson',
-  imports: [RouterLink, AppButton, AppCard, AppEmptyState, AppIcon, AppPageHeader],
+  imports: [RouterLink, AppButton, AppCard, AppIcon, AppPageHeader, CycleChapters],
   template: `
     <section
       class="primary-lesson-page mx-auto w-full max-w-[var(--content-max)] px-4 py-8 sm:px-6 sm:py-10"
     >
       <app-page-header
         [eyebrow]="i18n.translate('primary.nav.map')"
-        [title]="i18n.translate('primary.lesson.pageTitle')"
-        [description]="i18n.translate('primary.exercises.subtitle')"
+        [title]="i18n.translate('primary.chapters.title')"
+        [description]="i18n.translate('primary.chapters.subtitle')"
       />
 
       <div class="mt-7 grid gap-5 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-start">
         <app-card
           class="primary-lesson-page__story"
-          [title]="i18n.translate('primary.lesson.title')"
+          [title]="i18n.translate('curriculum.chapters')"
           heading="h2"
         >
           <div class="primary-lesson-page__illustration" aria-hidden="true">
@@ -32,16 +32,7 @@ import { AppPageHeader } from '../../../design-system/page-header/app-page-heade
             <span><app-icon name="sparkles" [size]="19" /></span>
             <span><app-icon name="puzzle" [size]="21" /></span>
           </div>
-          <app-empty-state
-            icon="book-open"
-            [title]="i18n.translate('primary.lesson.empty.title')"
-            [body]="i18n.translate('primary.lesson.empty.body2')"
-          >
-            <a routerLink="/primary" appButton variant="secondary" size="sm">
-              <app-icon name="arrow-left" [size]="16" />
-              {{ i18n.translate('primary.lesson.back') }}
-            </a>
-          </app-empty-state>
+          <app-cycle-chapters [cycle]="'PRIMARY'" />
         </app-card>
 
         <aside class="grid gap-5">

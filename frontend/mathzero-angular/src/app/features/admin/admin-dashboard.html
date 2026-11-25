@@ -1,0 +1,449 @@
+<main class="mx-auto w-full max-w-[var(--content-max)] space-y-8 px-4 py-8 sm:px-6 lg:py-12">
+  <header
+    class="overflow-hidden rounded-[2rem] bg-nav px-6 py-8 text-white shadow-float sm:px-10 sm:py-10"
+  >
+    <p class="text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">
+      {{ i18n.translate('admin.nav') }}
+    </p>
+    <h1 class="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+      {{ i18n.translate('admin.title') }}
+    </h1>
+    <p class="mt-3 max-w-3xl text-sm leading-6 text-white/75">
+      {{ i18n.translate('admin.subtitle') }}
+    </p>
+  </header>
+
+  <section
+    class="rounded-3xl border border-line bg-surface p-5 shadow-card sm:p-8"
+    aria-labelledby="curriculum-admin-title"
+  >
+    <div class="mb-6">
+      <p class="text-xs font-bold uppercase tracking-[0.16em] text-accent">
+        01 · {{ i18n.translate('admin.curriculum.eyebrow') }}
+      </p>
+      <h2 id="curriculum-admin-title" class="mt-2 text-2xl font-semibold text-ink">
+        {{ i18n.translate('admin.curriculum.title') }}
+      </h2>
+      <p class="mt-2 max-w-3xl text-sm leading-6 text-muted">
+        {{ i18n.translate('admin.curriculum.body') }}
+      </p>
+    </div>
+
+    <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]">
+      <div class="space-y-4">
+        <label class="block text-sm font-semibold text-ink" for="curriculum-file">
+          {{ i18n.translate('admin.curriculum.file') }}
+        </label>
+        <input
+          id="curriculum-file"
+          class="focus-ring block w-full rounded-control border border-line bg-canvas px-3 py-3 text-sm text-ink file:me-3 file:rounded-md file:border-0 file:bg-accent-soft file:px-3 file:py-2 file:font-semibold file:text-accent"
+          type="file"
+          accept="application/json,.json"
+          (change)="selectCurriculumFile($event)"
+        />
+        @if (selectedFile()) {
+          <p class="text-sm text-muted">{{ selectedFile() }}</p>
+        }
+        <label class="flex items-start gap-3 rounded-2xl bg-subtle p-4 text-sm text-ink">
+          <input
+            class="mt-1 size-4 accent-accent"
+            type="checkbox"
+            [checked]="publishAfterImport()"
+            (change)="setPublishAfterImport($event)"
+          />
+          <span>
+            <span class="block font-semibold">{{
+              i18n.translate('admin.curriculum.publish')
+            }}</span>
+            <span class="mt-1 block text-muted">{{
+              i18n.translate('admin.curriculum.publishHelp')
+            }}</span>
+          </span>
+        </label>
+        <div class="flex flex-wrap gap-3">
+          <button
+            class="focus-ring rounded-control bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
+            type="button"
+            [disabled]="!curriculumDocument() || curriculumBusy()"
+            (click)="validateCurriculum()"
+          >
+            {{
+              curriculumBusy()
+                ? i18n.translate('common.loading')
+                : i18n.translate('admin.curriculum.validate')
+            }}
+          </button>
+          <button
+            class="focus-ring rounded-control border border-line px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-subtle disabled:cursor-not-allowed disabled:opacity-50"
+            type="button"
+            [disabled]="!preview()?.valid || curriculumBusy()"
+            (click)="importCurriculum()"
+          >
+            {{ i18n.translate('admin.curriculum.import') }}
+          </button>
+        </div>
+      </div>
+
+      <aside class="rounded-2xl bg-subtle p-5">
+        <h3 class="font-semibold text-ink">{{ i18n.translate('admin.curriculum.safetyTitle') }}</h3>
+        <p class="mt-2 text-sm leading-6 text-muted">
+          {{ i18n.translate('admin.curriculum.safetyBody') }}
+        </p>
+      </aside>
+    </div>
+
+    @if (curriculumError()) {
+      <p
+        class="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+        role="alert"
+      >
+        {{ curriculumError() }}
+      </p>
+    }
+    @if (curriculumMessage()) {
+      <p
+        class="mt-5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"
+        role="status"
+      >
+        {{ curriculumMessage() }}
+      </p>
+    }
+    @if (preview(); as result) {
+      <div class="mt-6 rounded-2xl border border-line p-5">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <h3 class="font-semibold text-ink">
+            {{
+              result.valid
+                ? i18n.translate('admin.curriculum.valid')
+                : i18n.translate('admin.curriculum.invalid')
+            }}
+          </h3>
+          <span
+            class="rounded-full px-3 py-1 text-xs font-bold"
+            [class]="result.valid ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'"
+          >
+            {{ result.curriculumCode }} · {{ result.versionCode }}
+          </span>
+        </div>
+        <dl class="mt-4 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+          <div>
+            <dt class="text-muted">{{ i18n.translate('admin.curriculum.levels') }}</dt>
+            <dd class="font-semibold text-ink">{{ result.levels }}</dd>
+          </div>
+          <div>
+            <dt class="text-muted">{{ i18n.translate('admin.curriculum.grades') }}</dt>
+            <dd class="font-semibold text-ink">{{ result.grades }}</dd>
+          </div>
+          <div>
+            <dt class="text-muted">{{ i18n.translate('admin.curriculum.subjects') }}</dt>
+            <dd class="font-semibold text-ink">{{ result.subjects }}</dd>
+          </div>
+          <div>
+            <dt class="text-muted">{{ i18n.translate('admin.curriculum.skills') }}</dt>
+            <dd class="font-semibold text-ink">{{ result.skills }}</dd>
+          </div>
+        </dl>
+        @if (result.errors.length > 0) {
+          <ul class="mt-4 list-inside list-disc space-y-1 text-sm text-red-800" role="alert">
+            @for (message of result.errors; track message) {
+              <li>{{ message }}</li>
+            }
+          </ul>
+        }
+        @if (result.warnings.length > 0) {
+          <ul class="mt-4 list-inside list-disc space-y-1 text-sm text-amber-800">
+            @for (message of result.warnings; track message) {
+              <li>{{ message }}</li>
+            }
+          </ul>
+        }
+      </div>
+    }
+  </section>
+
+  <section
+    class="rounded-3xl border border-line bg-surface p-5 shadow-card sm:p-8"
+    aria-labelledby="resource-admin-title"
+  >
+    <div class="mb-6">
+      <p class="text-xs font-bold uppercase tracking-[0.16em] text-accent">
+        02 · {{ i18n.translate('admin.resources.eyebrow') }}
+      </p>
+      <h2 id="resource-admin-title" class="mt-2 text-2xl font-semibold text-ink">
+        {{ i18n.translate('admin.resources.title') }}
+      </h2>
+      <p class="mt-2 max-w-3xl text-sm leading-6 text-muted">
+        {{ i18n.translate('admin.resources.body') }}
+      </p>
+    </div>
+
+    <section
+      class="mb-8 rounded-2xl border border-line bg-subtle p-4 sm:p-5"
+      aria-labelledby="suggestions-title"
+    >
+      <div class="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h3 id="suggestions-title" class="font-semibold text-ink">
+            {{ i18n.translate('admin.resources.suggestionsTitle') }}
+          </h3>
+          <p class="mt-2 max-w-3xl text-sm leading-6 text-muted">
+            {{ i18n.translate('admin.resources.suggestionsNote') }}
+          </p>
+        </div>
+        <div class="flex flex-wrap items-end gap-2">
+          <label class="space-y-1 text-xs font-semibold text-ink">
+            <span>{{ i18n.translate('admin.resources.providerFilter') }}</span>
+            <select
+              class="focus-ring rounded-control border border-line bg-canvas px-3 py-2 text-xs"
+              name="suggestionProvider"
+              [value]="selectedProvider()"
+              (change)="changeProviderFilter($event)"
+            >
+              <option value="ALL">{{ i18n.translate('admin.resources.provider.all') }}</option>
+              @for (provider of suggestionProviders; track provider) {
+                <option [value]="provider">
+                  {{ i18n.translate(providerFilterLabel(provider)) }}
+                </option>
+              }
+            </select>
+          </label>
+          <button
+            class="focus-ring rounded-control border border-line px-3 py-2 text-xs font-semibold text-ink hover:bg-canvas disabled:opacity-50"
+            type="button"
+            [disabled]="suggestionsLoading()"
+            (click)="loadSuggestions()"
+          >
+            {{ i18n.translate('common.retry') }}
+          </button>
+        </div>
+      </div>
+
+      @if (suggestionsLoading()) {
+        <p class="mt-4 text-sm text-muted" role="status" aria-live="polite">
+          {{ i18n.translate('common.loading') }}
+        </p>
+      } @else if (suggestionsError()) {
+        <p class="mt-4 text-sm text-red-800" role="alert">
+          {{ i18n.translate('resources.loadError') }}
+        </p>
+      } @else {
+        <div class="mt-5 grid gap-4 md:grid-cols-3">
+          @for (cycle of ['PRIMARY', 'BASIC', 'SECONDARY']; track cycle) {
+            <div class="rounded-2xl border border-line bg-surface p-3">
+              <h4 class="mb-3 text-sm font-semibold text-ink">
+                {{ i18n.translate(suggestionCycleLabel(cycle)) }}
+              </h4>
+              @if (suggestionsFor(cycle).length === 0) {
+                <p class="text-xs text-muted">{{ i18n.translate('admin.resources.empty') }}</p>
+              } @else {
+                <ul class="space-y-3">
+                  @for (suggestion of suggestionsFor(cycle); track suggestionKey(suggestion)) {
+                    <li class="rounded-xl border border-line bg-canvas p-3">
+                      <a
+                        class="text-sm font-semibold text-accent underline"
+                        [href]="suggestion.url"
+                        target="_blank"
+                        rel="noopener"
+                        >{{ suggestion.title }}</a
+                      >
+                      <p class="mt-1 line-clamp-2 text-xs leading-5 text-muted">
+                        {{ suggestion.snippet }}
+                      </p>
+                      <p class="mt-2 text-[0.65rem] font-semibold uppercase tracking-wider text-accent">
+                        {{ suggestion.provider }} · {{ suggestion.language }}
+                      </p>
+                      <p class="mt-1 text-[0.65rem] text-muted">
+                        {{ i18n.translate(suggestionRightsLabel(suggestion.provider)) }}
+                      </p>
+                      <button
+                        class="focus-ring mt-3 w-full rounded-control bg-accent px-3 py-2 text-xs font-semibold text-white disabled:opacity-50"
+                        type="button"
+                        [disabled]="suggestionApprovalBusyUrl() !== null"
+                        (click)="approveSuggestion(suggestion)"
+                      >
+                        {{
+                          suggestionApprovalBusyUrl() === suggestionKey(suggestion)
+                            ? i18n.translate('common.loading')
+                            : i18n.translate('admin.resources.approve')
+                        }}
+                      </button>
+                    </li>
+                  }
+                </ul>
+              }
+            </div>
+          }
+        </div>
+      }
+    </section>
+
+    @if (resourceError()) {
+      <p
+        class="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+        role="alert"
+      >
+        {{ resourceError() }}
+      </p>
+    }
+    @if (resourceMessage()) {
+      <p
+        class="mt-5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"
+        role="status"
+      >
+        {{ resourceMessage() }}
+      </p>
+    }
+
+    <div class="mt-8">
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <h3 class="text-lg font-semibold text-ink">
+          {{ i18n.translate('admin.resources.reviewQueue') }}
+        </h3>
+        <button
+          class="focus-ring rounded-control border border-line px-3 py-2 text-sm font-semibold text-ink hover:bg-subtle"
+          type="button"
+          (click)="loadResources()"
+        >
+          {{ i18n.translate('common.retry') }}
+        </button>
+      </div>
+      @if (resources().length === 0) {
+        <p class="mt-3 rounded-2xl bg-subtle p-4 text-sm text-muted">
+          {{ i18n.translate('admin.resources.empty') }}
+        </p>
+      } @else {
+        <ul class="mt-4 divide-y divide-line rounded-2xl border border-line">
+          @for (resource of resources(); track resource.id) {
+            <li class="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+              <div class="min-w-0">
+                <a
+                  class="truncate font-semibold text-accent underline"
+                  [href]="resource.url"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  {{ resource.title }}
+                </a>
+                <p class="mt-1 text-xs text-muted">
+                  @if (resource.cycle) {
+                    {{ cycleLabel(resource.cycle) }} ·
+                  }
+                  {{ resource.language.toUpperCase() }} · {{ resource.resourceType }} ·
+                  {{ statusLabel(resource.reviewStatus) }}
+                </p>
+                <p class="mt-1 text-sm text-muted">
+                  {{ resource.licenceName }} ({{ resource.licenceCode }})
+                </p>
+                <p class="mt-1 text-sm text-ink">{{ resource.attributionText }}</p>
+                <a
+                  class="mt-1 inline-block text-xs text-accent underline"
+                  [href]="resource.licenceUrl"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  {{ i18n.translate('admin.resources.licenceUrl') }}
+                </a>
+                @if (resource.attributionUrl) {
+                  <a
+                    class="ms-3 inline-block text-xs text-accent underline"
+                    [href]="resource.attributionUrl"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    {{ i18n.translate('admin.resources.attributionUrl') }}
+                  </a>
+                }
+              </div>
+              <div class="flex flex-wrap gap-2">
+                @if (canSubmit(resource.reviewStatus)) {
+                  <button
+                    class="focus-ring rounded-control border border-line px-3 py-2 text-xs font-semibold text-ink hover:bg-subtle"
+                    type="button"
+                    (click)="reviewResource(resource, 'SUBMIT')"
+                  >
+                    {{ i18n.translate('admin.resources.submit') }}
+                  </button>
+                }
+                @if (canReview(resource.reviewStatus)) {
+                  <button
+                    class="focus-ring rounded-control bg-emerald-700 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-800"
+                    type="button"
+                    (click)="reviewResource(resource, 'APPROVE')"
+                  >
+                    {{ i18n.translate('admin.resources.approve') }}
+                  </button>
+                  <button
+                    class="focus-ring rounded-control border border-red-200 px-3 py-2 text-xs font-semibold text-red-800 hover:bg-red-50"
+                    type="button"
+                    (click)="reviewResource(resource, 'REJECT')"
+                  >
+                    {{ i18n.translate('admin.resources.reject') }}
+                  </button>
+                }
+                <button
+                  class="focus-ring rounded-control border border-line px-3 py-2 text-xs font-semibold text-ink hover:bg-subtle"
+                  type="button"
+                  [attr.aria-expanded]="reviewHistoryResourceId() === resource.id"
+                  (click)="toggleReviewHistory(resource)"
+                >
+                  {{ i18n.translate('admin.resources.reviewHistory') }}
+                </button>
+              </div>
+            </li>
+            @if (reviewHistoryResourceId() === resource.id) {
+              <li class="bg-subtle px-4 py-4">
+                <h4 class="font-semibold text-ink">
+                  {{ i18n.translate('admin.resources.reviewHistory') }}
+                </h4>
+                @if (reviewHistoryBusyId() === resource.id) {
+                  <p class="mt-2 text-sm text-muted">{{ i18n.translate('common.loading') }}</p>
+                } @else if (reviewHistoryError()) {
+                  <p class="mt-2 text-sm text-red-800" role="alert">{{ reviewHistoryError() }}</p>
+                } @else if (reviewHistoryFor(resource.id).length === 0) {
+                  <p class="mt-2 text-sm text-muted">
+                    {{ i18n.translate('admin.resources.reviewHistoryEmpty') }}
+                  </p>
+                } @else {
+                  <ol class="mt-3 space-y-3">
+                    @for (review of reviewHistoryFor(resource.id); track review.id) {
+                      <li class="rounded-xl border border-line bg-surface p-3 text-sm">
+                        <p class="font-semibold text-ink">
+                          {{ reviewDecisionLabel(review.decision) }} ·
+                          {{ reviewedAtLabel(review.reviewedAt) }}
+                        </p>
+                        <p class="mt-1 break-all text-xs text-muted">
+                          {{ i18n.translate('admin.resources.reviewedBy') }}:
+                          {{ review.reviewerId }}
+                        </p>
+                        @if (review.notes) {
+                          <p class="mt-2 whitespace-pre-wrap text-ink">{{ review.notes }}</p>
+                        }
+                      </li>
+                    }
+                  </ol>
+                }
+              </li>
+            }
+          }
+        </ul>
+      }
+    </div>
+
+    <div class="mt-8">
+      <h3 class="text-lg font-semibold text-ink">{{ i18n.translate('admin.providers.title') }}</h3>
+      <ul class="mt-3 grid gap-3 md:grid-cols-2">
+        @for (provider of providers(); track provider.provider) {
+          <li class="rounded-2xl border border-line p-4">
+            <div class="flex items-center justify-between gap-3">
+              <span class="font-semibold text-ink">{{ provider.provider }}</span>
+              <span class="rounded-full bg-subtle px-2.5 py-1 text-xs font-bold text-muted">{{
+                provider.status
+              }}</span>
+            </div>
+            <p class="mt-2 text-sm text-muted">{{ provider.note }}</p>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+</main>

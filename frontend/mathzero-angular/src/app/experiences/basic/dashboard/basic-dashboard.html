@@ -107,5 +107,13 @@
         </a>
       </app-empty-state>
     </app-card>
+
+    <app-card
+      class="basic-dashboard__resources"
+      [title]="i18n.translate('resources.forLevel')"
+      heading="h2"
+    >
+      <app-level-resources [cycle]="'BASIC'" />
+    </app-card>
   </div>
 </section>

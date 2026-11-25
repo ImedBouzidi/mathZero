@@ -1,0 +1,126 @@
+{
+  "code": "TN-MATH",
+  "nameFr": "Programme tunisien de mathématiques",
+  "nameAr": "البرنامج التونسي للرياضيات",
+  "versionCode": "ARCHIVE-2011-REVIEW",
+  "effectiveFrom": "2011-09-01",
+  "effectiveTo": null,
+  "sourceReference": "Ministère tunisien de l'Éducation — Programmes Officiels; Edunet programmes 2011: math_college.pdf and math.pdf",
+  "reviewer": "Pending Ministry/CNP curriculum review",
+  "publish": false,
+  "levels": [
+    {
+      "code": "PRIMARY",
+      "nameFr": "Primaire",
+      "nameAr": "الابتدائي",
+      "displayOrder": 0,
+      "grades": [
+        { "code": "P1", "nameFr": "Première année primaire", "nameAr": "السنة الأولى ابتدائي", "displayOrder": 0, "specializationCodes": [], "subjectCodes": ["MATH"] },
+        { "code": "P2", "nameFr": "Deuxième année primaire", "nameAr": "السنة الثانية ابتدائي", "displayOrder": 1, "specializationCodes": [], "subjectCodes": ["MATH"] },
+        { "code": "P3", "nameFr": "Troisième année primaire", "nameAr": "السنة الثالثة ابتدائي", "displayOrder": 2, "specializationCodes": [], "subjectCodes": ["MATH"] },
+        { "code": "P4", "nameFr": "Quatrième année primaire", "nameAr": "السنة الرابعة ابتدائي", "displayOrder": 3, "specializationCodes": [], "subjectCodes": ["MATH"] },
+        { "code": "P5", "nameFr": "Cinquième année primaire", "nameAr": "السنة الخامسة ابتدائي", "displayOrder": 4, "specializationCodes": [], "subjectCodes": ["MATH"] },
+        { "code": "P6", "nameFr": "Sixième année primaire", "nameAr": "السنة السادسة ابتدائي", "displayOrder": 5, "specializationCodes": [], "subjectCodes": ["MATH"] }
+      ]
+    },
+    {
+      "code": "BASIC",
+      "nameFr": "Enseignement de base",
+      "nameAr": "التعليم الأساسي",
+      "displayOrder": 1,
+      "grades": [
+        { "code": "B7", "nameFr": "Septième année de l’enseignement de base", "nameAr": "السنة السابعة من التعليم الأساسي", "displayOrder": 0, "specializationCodes": [], "subjectCodes": ["MATH"] },
+        { "code": "B8", "nameFr": "Huitième année de l’enseignement de base", "nameAr": "السنة الثامنة من التعليم الأساسي", "displayOrder": 1, "specializationCodes": [], "subjectCodes": ["MATH"] },
+        { "code": "B9", "nameFr": "Neuvième année de l’enseignement de base", "nameAr": "السنة التاسعة من التعليم الأساسي", "displayOrder": 2, "specializationCodes": [], "subjectCodes": ["MATH"] }
+      ]
+    },
+    {
+      "code": "SECONDARY",
+      "nameFr": "Enseignement secondaire",
+      "nameAr": "التعليم الثانوي",
+      "displayOrder": 2,
+      "grades": [
+        { "code": "S1", "nameFr": "Première année secondaire", "nameAr": "السنة الأولى ثانوي", "displayOrder": 0, "specializationCodes": [], "subjectCodes": ["MATH"] },
+        { "code": "S2", "nameFr": "Deuxième année secondaire", "nameAr": "السنة الثانية ثانوي", "displayOrder": 1, "specializationCodes": ["SCIENCES_TECHNOLOGIES_INFORMATIQUE", "ECONOMIE_SERVICES", "LETTRES"], "subjectCodes": ["MATH"] },
+        { "code": "S3", "nameFr": "Troisième année secondaire", "nameAr": "السنة الثالثة ثانوي", "displayOrder": 2, "specializationCodes": ["MATHEMATIQUES", "SCIENCES_EXPERIMENTALES", "SCIENCES_TECHNIQUES", "SCIENCES_INFORMATIQUE", "ECONOMIE_GESTION", "LETTRES"], "subjectCodes": ["MATH"] },
+        { "code": "S4", "nameFr": "Quatrième année secondaire", "nameAr": "السنة الرابعة ثانوي", "displayOrder": 3, "specializationCodes": ["MATHEMATIQUES", "SCIENCES_EXPERIMENTALES", "SCIENCES_TECHNIQUES", "SCIENCES_INFORMATIQUE", "ECONOMIE_GESTION", "LETTRES"], "subjectCodes": ["MATH"] }
+      ]
+    }
+  ],
+  "specializations": [
+    { "code": "SCIENCES_TECHNOLOGIES_INFORMATIQUE", "nameFr": "Sciences et technologies de l’informatique", "nameAr": "العلوم وتكنولوجيات الإعلامية", "displayOrder": 0 },
+    { "code": "ECONOMIE_SERVICES", "nameFr": "Économie et services", "nameAr": "الاقتصاد والخدمات", "displayOrder": 1 },
+    { "code": "LETTRES", "nameFr": "Lettres", "nameAr": "آداب", "displayOrder": 2 },
+    { "code": "MATHEMATIQUES", "nameFr": "Mathématiques", "nameAr": "رياضيات", "displayOrder": 3 },
+    { "code": "SCIENCES_EXPERIMENTALES", "nameFr": "Sciences expérimentales", "nameAr": "العلوم التجريبية", "displayOrder": 4 },
+    { "code": "SCIENCES_TECHNIQUES", "nameFr": "Sciences techniques", "nameAr": "العلوم التقنية", "displayOrder": 5 },
+    { "code": "SCIENCES_INFORMATIQUE", "nameFr": "Sciences de l’informatique", "nameAr": "علوم الإعلامية", "displayOrder": 6 },
+    { "code": "ECONOMIE_GESTION", "nameFr": "Économie et gestion", "nameAr": "الاقتصاد والتصرف", "displayOrder": 7 }
+  ],
+  "subjects": [
+    {
+      "code": "MATH",
+      "nameFr": "Mathématiques",
+      "nameAr": "الرياضيات",
+      "displayOrder": 0,
+      "chapters": [
+        { "code": "B7-NUMBERS", "titleFr": "Nombres et calcul", "titleAr": "مجال الأعداد والحساب", "displayOrder": 0, "skillCodes": ["B7-NUMBERS"] },
+        { "code": "B7-GEOMETRY", "titleFr": "Géométrie", "titleAr": "مجال الهندسة", "displayOrder": 1, "skillCodes": ["B7-GEOMETRY"] },
+        { "code": "B7-DATA", "titleFr": "Organisation des données", "titleAr": "تنظيم المعطيات", "displayOrder": 2, "skillCodes": ["B7-DATA"] },
+        { "code": "B8-NUMBERS", "titleFr": "Nombres rationnels, puissances et racines", "titleAr": "الأعداد النسبية والتمكين والجذور", "displayOrder": 3, "skillCodes": ["B8-NUMBERS"] },
+        { "code": "B8-GEOMETRY", "titleFr": "Translation, quadrilatères et théorème de Pythagore", "titleAr": "الانسحاب والأشكال الرباعية ونظرية فيثاغورس", "displayOrder": 4, "skillCodes": ["B8-GEOMETRY"] },
+        { "code": "B8-DATA", "titleFr": "Proportionnalité et représentation des données", "titleAr": "التناسب وتمثيل المعطيات", "displayOrder": 5, "skillCodes": ["B8-DATA"] },
+        { "code": "B9-NUMBERS", "titleFr": "Nombres réels, intervalles et racines", "titleAr": "الأعداد الحقيقية والفترات والجذور", "displayOrder": 6, "skillCodes": ["B9-NUMBERS"] },
+        { "code": "B9-GEOMETRY", "titleFr": "Géométrie plane et dans l’espace", "titleAr": "الهندسة المستوية وفي الفضاء", "displayOrder": 7, "skillCodes": ["B9-GEOMETRY"] },
+        { "code": "B9-DATA", "titleFr": "Statistiques et notions de probabilité", "titleAr": "الإحصاء ومفاهيم الاحتمالات", "displayOrder": 8, "skillCodes": ["B9-DATA"] },
+        { "code": "S1-NUMBERS", "titleFr": "Activités numériques", "titleAr": "الأنشطة العددية", "displayOrder": 9, "skillCodes": ["S1-NUMBERS"] },
+        { "code": "S1-FUNCTIONS", "titleFr": "Fonctions linéaires et affines", "titleAr": "الدوال الخطية والتآلفية", "displayOrder": 10, "skillCodes": ["S1-FUNCTIONS"] },
+        { "code": "S1-GEOMETRY", "titleFr": "Géométrie élémentaire", "titleAr": "الهندسة الابتدائية", "displayOrder": 11, "skillCodes": ["S1-GEOMETRY"] },
+        { "code": "S1-DATA", "titleFr": "Statistique", "titleAr": "الإحصاء", "displayOrder": 12, "skillCodes": ["S1-DATA"] },
+        { "code": "S2-FUNCTIONS", "titleFr": "Fonctions réelles et représentations graphiques", "titleAr": "الدوال الحقيقية وتمثيلاتها البيانية", "displayOrder": 13, "skillCodes": ["S2-FUNCTIONS"] },
+        { "code": "S2-GEOMETRY", "titleFr": "Trigonométrie et vecteurs", "titleAr": "التريغومتريا والمتجهات", "displayOrder": 14, "skillCodes": ["S2-GEOMETRY"] },
+        { "code": "S2-DATA", "titleFr": "Statistique et probabilités", "titleAr": "الإحصاء والاحتمالات", "displayOrder": 15, "skillCodes": ["S2-DATA"] },
+        { "code": "S3-SEQUENCES", "titleFr": "Suites réelles", "titleAr": "المتتاليات الحقيقية", "displayOrder": 16, "skillCodes": ["S3-SEQUENCES"] },
+        { "code": "S3-FUNCTIONS", "titleFr": "Fonctions, limites, continuité et dérivées", "titleAr": "الدوال والنهايات والاتصال والاشتقاق", "displayOrder": 17, "skillCodes": ["S3-FUNCTIONS"] },
+        { "code": "S3-CALCULUS", "titleFr": "Fonctions trigonométriques et intégration", "titleAr": "الدوال المثلثية والتكامل", "displayOrder": 18, "skillCodes": ["S3-CALCULUS"] },
+        { "code": "S3-GEOMETRY", "titleFr": "Géométrie dans l’espace", "titleAr": "الهندسة في الفضاء", "displayOrder": 19, "skillCodes": ["S3-GEOMETRY"] },
+        { "code": "S3-DATA", "titleFr": "Probabilités et statistiques", "titleAr": "الاحتمالات والإحصاء", "displayOrder": 20, "skillCodes": ["S3-DATA"] },
+        { "code": "S4-SEQUENCES", "titleFr": "Suites réelles récurrentes", "titleAr": "المتتاليات الحقيقية المعرفة بالترجيع", "displayOrder": 21, "skillCodes": ["S4-SEQUENCES"] },
+        { "code": "S4-FUNCTIONS", "titleFr": "Fonctions, limites, continuité et dérivées", "titleAr": "الدوال والنهايات والاتصال والاشتقاق", "displayOrder": 22, "skillCodes": ["S4-FUNCTIONS"] },
+        { "code": "S4-CALCULUS", "titleFr": "Primitives et intégrales", "titleAr": "الدوال الأصلية والتكامل", "displayOrder": 23, "skillCodes": ["S4-CALCULUS"] },
+        { "code": "S4-COMPLEX", "titleFr": "Nombres complexes", "titleAr": "الأعداد المركبة", "displayOrder": 24, "skillCodes": ["S4-COMPLEX"] },
+        { "code": "S4-GEOMETRY", "titleFr": "Géométrie dans l’espace", "titleAr": "الهندسة في الفضاء", "displayOrder": 25, "skillCodes": ["S4-GEOMETRY"] },
+        { "code": "S4-DATA", "titleFr": "Probabilités et statistiques", "titleAr": "الاحتمالات والإحصاء", "displayOrder": 26, "skillCodes": ["S4-DATA"] }
+      ]
+    }
+  ],
+  "skills": [
+    { "code": "B7-NUMBERS", "titleFr": "Calculer et décomposer les nombres", "titleAr": "الحساب وتحليل الأعداد", "objectiveFr": "Maîtriser les opérations, les fractions, les puissances et la décomposition des nombres.", "objectiveAr": "إتقان العمليات والكسور والتمكين وتحليل الأعداد.", "prerequisiteCodes": [] },
+    { "code": "B7-GEOMETRY", "titleFr": "Construire et raisonner en géométrie", "titleAr": "إنشاء الفضاءات الهندسية والتعليل", "objectiveFr": "Reconnaître les configurations, construire des figures et utiliser les propriétés des angles et triangles.", "objectiveAr": "التعرف إلى التراكيب الهندسية وإنشاء الأشكال واستعمال خواص الزوايا والمثلثات.", "prerequisiteCodes": ["B7-NUMBERS"] },
+    { "code": "B7-DATA", "titleFr": "Organiser des données", "titleAr": "تنظيم المعطيات", "objectiveFr": "Lire, organiser et représenter des données simples.", "objectiveAr": "قراءة وتنظيم وتمثيل المعطيات البسيطة.", "prerequisiteCodes": ["B7-NUMBERS"] },
+    { "code": "B8-NUMBERS", "titleFr": "Calculer dans l’ensemble des rationnels", "titleAr": "الحساب في مجموعة الأعداد النسبية", "objectiveFr": "Effectuer des opérations avec des rationnels, des puissances et des racines carrées.", "objectiveAr": "إجراء العمليات بالأعداد النسبية والتمكين والجذور المربعة.", "prerequisiteCodes": ["B7-NUMBERS"] },
+    { "code": "B8-GEOMETRY", "titleFr": "Appliquer les propriétés géométriques", "titleAr": "تطبيق الخواص الهندسية", "objectiveFr": "Utiliser l’aire, le périmètre, les quadrilatères et le théorème de Pythagore.", "objectiveAr": "استعمال المساحة والمحيط والأشكال الرباعية ونظرية فيثاغورس.", "prerequisiteCodes": ["B7-GEOMETRY"] },
+    { "code": "B8-DATA", "titleFr": "Résoudre des problèmes de proportionnalité", "titleAr": "حل مسائل التناسب", "objectiveFr": "Utiliser des rapports, des pourcentages et des représentations graphiques.", "objectiveAr": "استعمال النسب والنسب المئوية وتمثيلات بيانية.", "prerequisiteCodes": ["B7-DATA"] },
+    { "code": "B9-NUMBERS", "titleFr": "Calculer dans l’ensemble des réels", "titleAr": "الحساب في مجموعة الأعداد الحقيقية", "objectiveFr": "Comparer des réels, utiliser les intervalles, les valeurs absolues et les racines.", "objectiveAr": "مقارنة الأعداد الحقيقية واستعمال الفترات والقيم المطلقة والجذور.", "prerequisiteCodes": ["B8-NUMBERS"] },
+    { "code": "B9-GEOMETRY", "titleFr": "Raisonner dans le plan et l’espace", "titleAr": "التعليل في المستوي وفي الفضاء", "objectiveFr": "Utiliser les vecteurs, les coordonnées, les cercles, les angles et les configurations de l’espace.", "objectiveAr": "استعمال المتجهات والإحداثيات والدوائر والزوايا وتراكيب الفضاء.", "prerequisiteCodes": ["B8-GEOMETRY"] },
+    { "code": "B9-DATA", "titleFr": "Analyser des données", "titleAr": "تحليل المعطيات", "objectiveFr": "Organiser des données statistiques et résoudre des problèmes simples de probabilité.", "objectiveAr": "تنظيم المعطيات الإحصائية وحل مسائل بسيطة في الاحتمالات.", "prerequisiteCodes": ["B8-DATA"] },
+    { "code": "S1-NUMBERS", "titleFr": "Maîtriser les nombres réels", "titleAr": "إتقان الأعداد الحقيقية", "objectiveFr": "Calculer dans R, utiliser l’ordre, la valeur absolue, les intervalles et les décompositions.", "objectiveAr": "الحساب في R واستعمال الترتيب والقيمة المطلقة والفترات والتحليل.", "prerequisiteCodes": ["B9-NUMBERS"] },
+    { "code": "S1-FUNCTIONS", "titleFr": "Étudier les fonctions linéaires et affines", "titleAr": "دراسة الدوال الخطية والتآلفية", "objectiveFr": "Représenter, interpréter et exploiter les fonctions linéaires et affines.", "objectiveAr": "تمثيل وتفسير واستغلال الدوال الخطية والتآلفية.", "prerequisiteCodes": ["B9-NUMBERS"] },
+    { "code": "S1-GEOMETRY", "titleFr": "Raisonner en géométrie élémentaire", "titleAr": "التعليل في الهندسة الابتدائية", "objectiveFr": "Résoudre des problèmes avec les configurations géométriques élémentaires.", "objectiveAr": "حل مسائل باستعمال التراكيب الهندسية الابتدائية.", "prerequisiteCodes": ["B9-GEOMETRY"] },
+    { "code": "S1-DATA", "titleFr": "Lire et interpréter une statistique", "titleAr": "قراءة وتفسير الإحصاء", "objectiveFr": "Organiser et interpréter des données statistiques.", "objectiveAr": "تنظيم وتفسير المعطيات الإحصائية.", "prerequisiteCodes": ["B9-DATA"] },
+    { "code": "S2-FUNCTIONS", "titleFr": "Étudier les fonctions réelles", "titleAr": "دراسة الدوال الحقيقية", "objectiveFr": "Analyser les représentations graphiques et les propriétés des fonctions réelles.", "objectiveAr": "تحليل التمثيلات البيانية وخواص الدوال الحقيقية.", "prerequisiteCodes": ["S1-FUNCTIONS"] },
+    { "code": "S2-GEOMETRY", "titleFr": "Utiliser trigonométrie et vecteurs", "titleAr": "استعمال التريغومتريا والمتجهات", "objectiveFr": "Résoudre des problèmes trigonométriques et vectoriels.", "objectiveAr": "حل مسائل في التريغومتريا والمتجهات.", "prerequisiteCodes": ["S1-GEOMETRY"] },
+    { "code": "S2-DATA", "titleFr": "Analyser données et probabilités", "titleAr": "تحليل المعطيات والاحتمالات", "objectiveFr": "Interpréter des statistiques et modéliser des situations probabilistes simples.", "objectiveAr": "تفسير الإحصاءات ونمذجة وضعيات احتمالية بسيطة.", "prerequisiteCodes": ["S1-DATA"] },
+    { "code": "S3-SEQUENCES", "titleFr": "Étudier les suites réelles", "titleAr": "دراسة المتتاليات الحقيقية", "objectiveFr": "Reconnaître, représenter et étudier les suites arithmétiques et géométriques.", "objectiveAr": "التعرف وتمثيل ودراسة المتتاليات الحسابية والهندسية.", "prerequisiteCodes": ["S2-FUNCTIONS"] },
+    { "code": "S3-FUNCTIONS", "titleFr": "Analyser les fonctions", "titleAr": "تحليل الدوال", "objectiveFr": "Étudier les limites, la continuité et les dérivées.", "objectiveAr": "دراسة النهايات والاتصال والاشتقاق.", "prerequisiteCodes": ["S2-FUNCTIONS"] },
+    { "code": "S3-CALCULUS", "titleFr": "Utiliser le calcul intégral", "titleAr": "استعمال الحساب التكاملي", "objectiveFr": "Étudier les fonctions trigonométriques et introduire l’intégration.", "objectiveAr": "دراسة الدوال المثلثية ومقدمة في التكامل.", "prerequisiteCodes": ["S3-FUNCTIONS"] },
+    { "code": "S3-GEOMETRY", "titleFr": "Raisonner dans l’espace", "titleAr": "التعليل في الفضاء", "objectiveFr": "Résoudre des problèmes de géométrie dans l’espace.", "objectiveAr": "حل مسائل الهندسة في الفضاء.", "prerequisiteCodes": ["S2-GEOMETRY"] },
+    { "code": "S3-DATA", "titleFr": "Modéliser les phénomènes aléatoires", "titleAr": "نمذجة الظواهر العشوائية", "objectiveFr": "Utiliser les probabilités et les statistiques pour résoudre des problèmes.", "objectiveAr": "استعمال الاحتمالات والإحصاء لحل المسائل.", "prerequisiteCodes": ["S2-DATA"] },
+    { "code": "S4-SEQUENCES", "titleFr": "Étudier les suites récurrentes", "titleAr": "دراسة المتتاليات بالترجيع", "objectiveFr": "Analyser les suites récurrentes, les variations et les limites.", "objectiveAr": "تحليل المتتاليات بالترجيع والتغير والنهايات.", "prerequisiteCodes": ["S3-SEQUENCES"] },
+    { "code": "S4-FUNCTIONS", "titleFr": "Maîtriser l’analyse réelle", "titleAr": "إتقان التحليل الحقيقي", "objectiveFr": "Étudier les fonctions, les limites, la continuité et les dérivées.", "objectiveAr": "دراسة الدوال والنهايات والاتصال والاشتقاق.", "prerequisiteCodes": ["S3-FUNCTIONS"] },
+    { "code": "S4-CALCULUS", "titleFr": "Calculer des intégrales", "titleAr": "حساب التكاملات", "objectiveFr": "Utiliser les primitives et les intégrales pour résoudre des problèmes.", "objectiveAr": "استعمال الدوال الأصلية والتكاملات لحل المسائل.", "prerequisiteCodes": ["S4-FUNCTIONS"] },
+    { "code": "S4-COMPLEX", "titleFr": "Utiliser les nombres complexes", "titleAr": "استعمال الأعداد المركبة", "objectiveFr": "Effectuer des calculs complexes et les exploiter en géométrie.", "objectiveAr": "إجراء حسابات بالأعداد المركبة واستغلالها في الهندسة.", "prerequisiteCodes": ["S4-FUNCTIONS"] },
+    { "code": "S4-GEOMETRY", "titleFr": "Résoudre des problèmes dans l’espace", "titleAr": "حل مسائل في الفضاء", "objectiveFr": "Mobiliser les outils vectoriels et géométriques dans l’espace.", "objectiveAr": "استعمال الأدوات المتجهة والهندسية في الفضاء.", "prerequisiteCodes": ["S3-GEOMETRY"] },
+    { "code": "S4-DATA", "titleFr": "Modéliser avec statistiques et probabilités", "titleAr": "النمذجة بالإحصاء والاحتمالات", "objectiveFr": "Analyser des données et modéliser des phénomènes aléatoires.", "objectiveAr": "تحليل المعطيات ونمذجة الظواهر العشوائية.", "prerequisiteCodes": ["S3-DATA"] }
+  ]
+}

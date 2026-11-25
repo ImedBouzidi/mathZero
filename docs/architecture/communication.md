@@ -70,8 +70,8 @@ Rules:
 
 ## External provider boundary
 
-Only `resource-service` may call Wikimedia, YouTube, CNTE/Edusoutien or other
-external educational providers.
+Only `resource-service` may call Wikimedia, OpenStax, GeoGebra, PhET, YouTube,
+CNTE/Edusoutien or other external educational providers.
 
 - Provider responses are normalized into internal DTOs; provider-specific fields
   do not leak into other services or Angular.

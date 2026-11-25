@@ -19,7 +19,7 @@ export const PRIMARY_ROUTES: Routes = [
       {
         path: 'lessons',
         loadComponent: () => import('./lessons/primary-lesson').then((m) => m.PrimaryLesson),
-        title: 'Leçon · Math Adventure',
+        title: 'Chapitres · Math Adventure',
       },
       {
         path: 'lessons/:lessonId',

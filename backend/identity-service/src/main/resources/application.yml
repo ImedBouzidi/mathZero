@@ -1,0 +1,58 @@
+server:
+  port: ${IDENTITY_PORT:8091}
+
+spring:
+  application:
+    name: identity-service
+  datasource:
+    url: ${IDENTITY_DB_URL:jdbc:postgresql://localhost:5432/identity_db}
+    username: ${IDENTITY_DB_USERNAME:mathzero_admin}
+    password: ${IDENTITY_DB_PASSWORD:change-me-locally}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+app:
+  auth:
+    jwt-secret: ${AUTH_JWT_SECRET:change-this-local-development-secret-at-least-32-bytes}
+    access-token-seconds: ${AUTH_ACCESS_TOKEN_SECONDS:900}
+    refresh-token-days: ${AUTH_REFRESH_TOKEN_DAYS:30}
+    cookie:
+      secure: ${AUTH_COOKIE_SECURE:false}
+      same-site: ${AUTH_COOKIE_SAME_SITE:Lax}
+  admin:
+    # Idempotent startup bootstrap. Registration can never grant ADMIN.
+    # Production deployments must set APP_ADMIN_PASSWORD from a secret store
+    # and disable this after the first administrator exists.
+    bootstrap:
+      enabled: ${APP_ADMIN_BOOTSTRAP_ENABLED:true}
+      email: ${APP_ADMIN_EMAIL:admin@mathplay.com}
+      password: ${APP_ADMIN_PASSWORD:}
+      display-name: ${APP_ADMIN_DISPLAY_NAME:Platform Administrator}
+  learners:
+    bootstrap:
+      enabled: ${APP_LEARNER_BOOTSTRAP_ENABLED:true}
+      password: ${APP_LEARNER_PASSWORD:}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+  instance:
+    hostname: ${EUREKA_INSTANCE_HOSTNAME:localhost}
+    prefer-ip-address: ${EUREKA_PREFER_IP_ADDRESS:false}
+    instance-id: ${spring.application.name}:${server.port}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

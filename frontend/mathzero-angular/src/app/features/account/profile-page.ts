@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
+import { AuthService } from '../../core/auth/auth.service';
 import { EXPERIENCE_LIST } from '../../core/experience/education-cycle';
 import { LanguageService } from '../../core/i18n/language.service';
 import { ProfileService } from '../../core/profile/profile.service';
@@ -30,10 +31,16 @@ import { AppPageHeader } from '../../design-system/page-header/app-page-header';
               <p class="text-sm leading-6 text-muted">
                 {{ i18n.translate('account.profile.guest.body') }}
               </p>
-              <button appButton type="button" variant="secondary" size="sm" class="mt-4" disabled>
+              @if (auth.isAuthenticated()) {
+                <button appButton type="button" variant="secondary" size="sm" class="mt-4" (click)="logout()">
+                  Se déconnecter
+                </button>
+              } @else {
+                <a routerLink="/login" appButton variant="secondary" size="sm" class="mt-4">
                 {{ i18n.translate('account.profile.signIn') }}
                 <app-icon name="lock" [size]="15" />
-              </button>
+                </a>
+              }
             </div>
           </div>
         </app-card>
@@ -101,5 +108,13 @@ import { AppPageHeader } from '../../design-system/page-header/app-page-header';
 export class ProfilePage {
   protected readonly i18n = inject(LanguageService);
   protected readonly profile = inject(ProfileService);
+  protected readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
   protected readonly experiences = EXPERIENCE_LIST;
+
+  protected logout(): void {
+    this.auth.logout().subscribe({
+      complete: () => void this.router.navigateByUrl('/'),
+    });
+  }
 }

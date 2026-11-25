@@ -78,3 +78,14 @@ export function isEducationCycle(value: unknown): value is EducationCycle {
 export function experienceHome(cycle: EducationCycle): string {
   return EXPERIENCES[cycle].basePath;
 }
+
+/** Route to the animated lesson generated for an approved resource. */
+export function lessonPath(cycle: string | null | undefined, resourceId: string): string | null {
+  const normalized = (cycle ?? '').toLowerCase();
+  if (!isEducationCycle(normalized)) {
+    return null;
+  }
+  const base = EXPERIENCES[normalized].basePath;
+  const segment = normalized === 'primary' ? 'lessons' : 'lesson';
+  return `${base}/${segment}/${encodeURIComponent(resourceId)}`;
+}

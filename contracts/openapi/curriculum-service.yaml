@@ -1,0 +1,1108 @@
+openapi: 3.1.0
+info:
+  title: Mathematics Zero to Hero — Curriculum API
+  version: 0.1.0
+  description: |
+    Versioned curriculum catalogue exposed through the public API Gateway.
+    Public reads return published data only; mutations require an ADMIN JWT.
+servers:
+  - url: http://localhost:8090/api/v1
+    description: Local development Gateway
+tags:
+  - name: Curriculum
+  - name: Curriculum administration
+paths:
+  /curricula:
+    get:
+      tags: [Curriculum]
+      operationId: listCurricula
+      summary: List published curricula effective on a date
+      parameters:
+        - $ref: "#/components/parameters/Search"
+        - name: asOf
+          in: query
+          description: Effective date, defaulting to the current UTC date.
+          schema:
+            type: string
+            format: date
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Size"
+      responses:
+        "200":
+          description: A page of effective, published curricula
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurriculumPageEnvelope"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /curricula/{code}/versions:
+    get:
+      tags: [Curriculum]
+      operationId: listCurriculumVersions
+      parameters:
+        - $ref: "#/components/parameters/Code"
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Size"
+      responses:
+        "200":
+          description: Published versions, newest first
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VersionPageEnvelope"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /versions/{versionId}/levels:
+    get:
+      tags: [Curriculum]
+      operationId: listLevels
+      parameters:
+        - $ref: "#/components/parameters/VersionId"
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Size"
+      responses:
+        "200":
+          description: Published levels in display order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NodePageEnvelope"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /levels/{levelId}/grades:
+    get:
+      tags: [Curriculum]
+      operationId: listGrades
+      parameters:
+        - $ref: "#/components/parameters/LevelId"
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Size"
+      responses:
+        "200":
+          description: Published grades in display order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NodePageEnvelope"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /grades/{gradeId}/specializations:
+    get:
+      tags: [Curriculum]
+      operationId: listSpecializations
+      parameters:
+        - $ref: "#/components/parameters/GradeId"
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Size"
+      responses:
+        "200":
+          description: Specializations mapped to this grade
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NodePageEnvelope"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /grades/{gradeId}/subjects:
+    get:
+      tags: [Curriculum]
+      operationId: listSubjects
+      parameters:
+        - $ref: "#/components/parameters/GradeId"
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Size"
+      responses:
+        "200":
+          description: Subjects mapped to this grade
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NodePageEnvelope"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /subjects/{subjectId}/chapters:
+    get:
+      tags: [Curriculum]
+      operationId: listChapters
+      parameters:
+        - $ref: "#/components/parameters/SubjectId"
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Size"
+      responses:
+        "200":
+          description: Published chapters in display order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChapterPageEnvelope"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /chapters/{chapterId}/skills:
+    get:
+      tags: [Curriculum]
+      operationId: listSkills
+      parameters:
+        - $ref: "#/components/parameters/ChapterId"
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Size"
+      responses:
+        "200":
+          description: Published learning objectives mapped to this chapter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillPageEnvelope"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /skills/{skillId}/prerequisites:
+    get:
+      tags: [Curriculum]
+      operationId: listSkillPrerequisites
+      parameters:
+        - $ref: "#/components/parameters/SkillId"
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Size"
+      responses:
+        "200":
+          description: Published prerequisites for the selected skill
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillPageEnvelope"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /admin/curricula:
+    post:
+      tags: [Curriculum administration]
+      operationId: createCurriculum
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCurriculum"
+      responses:
+        "201":
+          description: Curriculum created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurriculumEnvelope"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /admin/curricula/import:
+    post:
+      tags: [Curriculum administration]
+      operationId: importCurriculumDocument
+      summary: Validate or import a versioned curriculum JSON document
+      description: |
+        Set dryRun=true to validate without writing. Imports are transactional;
+        published versions are immutable. The request's publish flag is honored
+        only when dryRun=false.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: dryRun
+          in: query
+          schema:
+            type: boolean
+            default: false
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CurriculumImport"
+      responses:
+        "200":
+          description: Validation or import result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurriculumImportEnvelope"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /admin/curricula/{curriculumId}/versions:
+    post:
+      tags: [Curriculum administration]
+      operationId: createCurriculumVersion
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: curriculumId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateVersion"
+      responses:
+        "201":
+          description: Draft version created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VersionEnvelope"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /admin/curricula/versions/{versionId}/dates:
+    put:
+      tags: [Curriculum administration]
+      operationId: updateCurriculumVersionDates
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/VersionId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VersionDates"
+      responses:
+        "200":
+          description: Draft version dates updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VersionEnvelope"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /admin/curricula/versions/{versionId}/levels:
+    post:
+      tags: [Curriculum administration]
+      operationId: createLevel
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/VersionId"
+      requestBody:
+        $ref: "#/components/requestBodies/CreateNamedNode"
+      responses:
+        "201":
+          description: Level created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NodeEnvelope"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /admin/curricula/levels/{levelId}/grades:
+    post:
+      tags: [Curriculum administration]
+      operationId: createGrade
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/LevelId"
+      requestBody:
+        $ref: "#/components/requestBodies/CreateNamedNode"
+      responses:
+        "201":
+          description: Grade created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NodeEnvelope"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /admin/curricula/versions/{versionId}/specializations:
+    post:
+      tags: [Curriculum administration]
+      operationId: createSpecialization
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/VersionId"
+      requestBody:
+        $ref: "#/components/requestBodies/CreateNamedNode"
+      responses:
+        "201":
+          description: Specialization created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NodeEnvelope"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /admin/curricula/grades/{gradeId}/specializations/{specializationId}:
+    put:
+      tags: [Curriculum administration]
+      operationId: mapSpecializationToGrade
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/GradeId"
+        - name: specializationId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Specialization mapped to grade
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /admin/curricula/versions/{versionId}/subjects:
+    post:
+      tags: [Curriculum administration]
+      operationId: createSubject
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/VersionId"
+      requestBody:
+        $ref: "#/components/requestBodies/CreateNamedNode"
+      responses:
+        "201":
+          description: Subject created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NodeEnvelope"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /admin/curricula/grades/{gradeId}/subjects/{subjectId}:
+    put:
+      tags: [Curriculum administration]
+      operationId: mapSubjectToGrade
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/GradeId"
+        - name: subjectId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Subject mapped to grade
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /admin/curricula/subjects/{subjectId}/chapters:
+    post:
+      tags: [Curriculum administration]
+      operationId: createChapter
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/SubjectId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateChapter"
+      responses:
+        "201":
+          description: Chapter created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChapterEnvelope"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /admin/curricula/versions/{versionId}/skills:
+    post:
+      tags: [Curriculum administration]
+      operationId: createSkill
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/VersionId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSkill"
+      responses:
+        "201":
+          description: Skill created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillEnvelope"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /admin/curricula/chapters/{chapterId}/skills/{skillId}:
+    put:
+      tags: [Curriculum administration]
+      operationId: mapSkillToChapter
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ChapterId"
+        - $ref: "#/components/parameters/SkillId"
+      responses:
+        "204":
+          description: Skill mapped to chapter
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /admin/curricula/skills/{skillId}/prerequisites/{prerequisiteId}:
+    put:
+      tags: [Curriculum administration]
+      operationId: addSkillPrerequisite
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/SkillId"
+        - name: prerequisiteId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Prerequisite added
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /admin/curricula/versions/{versionId}/publish:
+    post:
+      tags: [Curriculum administration]
+      operationId: publishCurriculumVersion
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/VersionId"
+      responses:
+        "200":
+          description: Version published
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VersionEnvelope"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Requires the ADMIN role claim.
+  parameters:
+    Search:
+      name: search
+      in: query
+      schema:
+        type: string
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    Size:
+      name: size
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    Code:
+      name: code
+      in: path
+      required: true
+      schema:
+        type: string
+    VersionId:
+      name: versionId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    LevelId:
+      name: levelId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    GradeId:
+      name: gradeId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    SubjectId:
+      name: subjectId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ChapterId:
+      name: chapterId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    SkillId:
+      name: skillId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBodies:
+    CreateNamedNode:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CreateNamedNode"
+  responses:
+    BadRequest:
+      description: Invalid request or pagination parameters
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiError"
+    Unauthorized:
+      description: Authentication is required
+    Forbidden:
+      description: ADMIN role is required
+    NotFound:
+      description: Requested curriculum record was not found or is unpublished
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiError"
+    Conflict:
+      description: Record conflict or invalid publication/prerequisite relationship
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiError"
+  schemas:
+    ResponseMeta:
+      type: object
+      required: [requestId]
+      properties:
+        requestId:
+          type: string
+    ApiError:
+      type: object
+      required: [code, message, requestId]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        requestId:
+          type: string
+    Page:
+      type: object
+      required: [items, page, size, totalElements, totalPages]
+      properties:
+        items:
+          type: array
+          items: {}
+        page:
+          type: integer
+        size:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+    Curriculum:
+      type: object
+      required: [id, code, nameFr, nameAr, currentVersion]
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        nameFr:
+          type: string
+        nameAr:
+          type: string
+        currentVersion:
+          $ref: "#/components/schemas/Version"
+    Version:
+      type: object
+      required: [id, code, effectiveFrom]
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        effectiveFrom:
+          type: string
+          format: date
+        effectiveTo:
+          type: [string, "null"]
+          format: date
+        sourceReference:
+          type: [string, "null"]
+          maxLength: 512
+        reviewer:
+          type: [string, "null"]
+          maxLength: 180
+    Node:
+      type: object
+      required: [id, code, nameFr, nameAr, displayOrder]
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        nameFr:
+          type: string
+        nameAr:
+          type: string
+        displayOrder:
+          type: integer
+    Chapter:
+      type: object
+      required: [id, code, titleFr, titleAr, displayOrder]
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        titleFr:
+          type: string
+        titleAr:
+          type: string
+        displayOrder:
+          type: integer
+    Skill:
+      type: object
+      required:
+        [id, code, titleFr, titleAr, objectiveFr, objectiveAr, prerequisites]
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        titleFr:
+          type: string
+        titleAr:
+          type: string
+        objectiveFr:
+          type: string
+        objectiveAr:
+          type: string
+        prerequisites:
+          type: array
+          items:
+            type: string
+            format: uuid
+    CurriculumEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: "#/components/schemas/Curriculum"
+        meta:
+          $ref: "#/components/schemas/ResponseMeta"
+    VersionEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: "#/components/schemas/Version"
+        meta:
+          $ref: "#/components/schemas/ResponseMeta"
+    NodeEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: "#/components/schemas/Node"
+        meta:
+          $ref: "#/components/schemas/ResponseMeta"
+    ChapterEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: "#/components/schemas/Chapter"
+        meta:
+          $ref: "#/components/schemas/ResponseMeta"
+    SkillEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: "#/components/schemas/Skill"
+        meta:
+          $ref: "#/components/schemas/ResponseMeta"
+    CurriculumPageEnvelope:
+      allOf:
+        - $ref: "#/components/schemas/PageEnvelope"
+        - type: object
+          properties:
+            data:
+              allOf:
+                - $ref: "#/components/schemas/Page"
+                - type: object
+                  properties:
+                    items:
+                      type: array
+                      items:
+                        $ref: "#/components/schemas/Curriculum"
+    VersionPageEnvelope:
+      allOf:
+        - $ref: "#/components/schemas/PageEnvelope"
+        - type: object
+          properties:
+            data:
+              allOf:
+                - $ref: "#/components/schemas/Page"
+                - type: object
+                  properties:
+                    items:
+                      type: array
+                      items:
+                        $ref: "#/components/schemas/Version"
+    NodePageEnvelope:
+      allOf:
+        - $ref: "#/components/schemas/PageEnvelope"
+        - type: object
+          properties:
+            data:
+              allOf:
+                - $ref: "#/components/schemas/Page"
+                - type: object
+                  properties:
+                    items:
+                      type: array
+                      items:
+                        $ref: "#/components/schemas/Node"
+    ChapterPageEnvelope:
+      allOf:
+        - $ref: "#/components/schemas/PageEnvelope"
+        - type: object
+          properties:
+            data:
+              allOf:
+                - $ref: "#/components/schemas/Page"
+                - type: object
+                  properties:
+                    items:
+                      type: array
+                      items:
+                        $ref: "#/components/schemas/Chapter"
+    SkillPageEnvelope:
+      allOf:
+        - $ref: "#/components/schemas/PageEnvelope"
+        - type: object
+          properties:
+            data:
+              allOf:
+                - $ref: "#/components/schemas/Page"
+                - type: object
+                  properties:
+                    items:
+                      type: array
+                      items:
+                        $ref: "#/components/schemas/Skill"
+    PageEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: "#/components/schemas/Page"
+        meta:
+          $ref: "#/components/schemas/ResponseMeta"
+    CreateCurriculum:
+      type: object
+      required: [code, nameFr, nameAr]
+      properties:
+        code:
+          type: string
+          maxLength: 80
+        nameFr:
+          type: string
+          maxLength: 180
+        nameAr:
+          type: string
+          maxLength: 180
+    CreateVersion:
+      type: object
+      required: [code, effectiveFrom]
+      properties:
+        code:
+          type: string
+          maxLength: 80
+        effectiveFrom:
+          type: string
+          format: date
+        effectiveTo:
+          type: [string, "null"]
+          format: date
+    CurriculumImport:
+      type: object
+      required: [code, nameFr, nameAr, versionCode, effectiveFrom]
+      properties:
+        code: { type: string, maxLength: 80 }
+        nameFr: { type: string, maxLength: 180 }
+        nameAr: { type: string, maxLength: 180 }
+        versionCode: { type: string, maxLength: 80 }
+        effectiveFrom: { type: string, format: date }
+        effectiveTo: { type: [string, "null"], format: date }
+        sourceReference: { type: [string, "null"], maxLength: 512 }
+        reviewer: { type: [string, "null"], maxLength: 180 }
+        publish: { type: boolean, default: false }
+        levels:
+          type: array
+          items: { $ref: "#/components/schemas/ImportLevel" }
+        specializations:
+          type: array
+          items: { $ref: "#/components/schemas/ImportSpecialization" }
+        subjects:
+          type: array
+          items: { $ref: "#/components/schemas/ImportSubject" }
+        skills:
+          type: array
+          items: { $ref: "#/components/schemas/ImportSkill" }
+    ImportLevel:
+      type: object
+      required: [code, nameFr, nameAr, displayOrder]
+      properties:
+        code: { type: string, maxLength: 80 }
+        nameFr: { type: string, maxLength: 180 }
+        nameAr: { type: string, maxLength: 180 }
+        displayOrder: { type: integer, minimum: 0 }
+        grades:
+          type: array
+          items: { $ref: "#/components/schemas/ImportGrade" }
+    ImportGrade:
+      type: object
+      required: [code, nameFr, nameAr, displayOrder]
+      properties:
+        code: { type: string, maxLength: 80 }
+        nameFr: { type: string, maxLength: 180 }
+        nameAr: { type: string, maxLength: 180 }
+        displayOrder: { type: integer, minimum: 0 }
+        specializationCodes: { type: array, items: { type: string } }
+        subjectCodes: { type: array, items: { type: string } }
+    ImportSpecialization:
+      type: object
+      required: [code, nameFr, nameAr, displayOrder]
+      properties:
+        code: { type: string, maxLength: 80 }
+        nameFr: { type: string, maxLength: 180 }
+        nameAr: { type: string, maxLength: 180 }
+        displayOrder: { type: integer, minimum: 0 }
+    ImportSubject:
+      type: object
+      required: [code, nameFr, nameAr, displayOrder]
+      properties:
+        code: { type: string, maxLength: 80 }
+        nameFr: { type: string, maxLength: 180 }
+        nameAr: { type: string, maxLength: 180 }
+        displayOrder: { type: integer, minimum: 0 }
+        chapters:
+          type: array
+          items: { $ref: "#/components/schemas/ImportChapter" }
+    ImportChapter:
+      type: object
+      required: [code, titleFr, titleAr, displayOrder]
+      properties:
+        code: { type: string, maxLength: 80 }
+        titleFr: { type: string, maxLength: 180 }
+        titleAr: { type: string, maxLength: 180 }
+        displayOrder: { type: integer, minimum: 0 }
+        skillCodes: { type: array, items: { type: string } }
+    ImportSkill:
+      type: object
+      required: [code, titleFr, titleAr, objectiveFr, objectiveAr]
+      properties:
+        code: { type: string, maxLength: 80 }
+        titleFr: { type: string, maxLength: 240 }
+        titleAr: { type: string, maxLength: 240 }
+        objectiveFr: { type: string }
+        objectiveAr: { type: string }
+        prerequisiteCodes: { type: array, items: { type: string } }
+    CurriculumImportResult:
+      type: object
+      required: [dryRun, valid, published, curriculumCode, versionCode, levels, grades, specializations, subjects, chapters, skills, errors, warnings]
+      properties:
+        dryRun: { type: boolean }
+        valid: { type: boolean }
+        published: { type: boolean }
+        curriculumId: { type: [string, "null"], format: uuid }
+        versionId: { type: [string, "null"], format: uuid }
+        curriculumCode: { type: string }
+        versionCode: { type: string }
+        levels: { type: integer }
+        grades: { type: integer }
+        specializations: { type: integer }
+        subjects: { type: integer }
+        chapters: { type: integer }
+        skills: { type: integer }
+        errors: { type: array, items: { type: string } }
+        warnings: { type: array, items: { type: string } }
+    CurriculumImportEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data: { $ref: "#/components/schemas/CurriculumImportResult" }
+        meta: { $ref: "#/components/schemas/ResponseMeta" }
+    VersionDates:
+      type: object
+      required: [effectiveFrom]
+      properties:
+        effectiveFrom:
+          type: string
+          format: date
+        effectiveTo:
+          type: [string, "null"]
+          format: date
+    CreateNamedNode:
+      type: object
+      required: [code, nameFr, nameAr, displayOrder]
+      properties:
+        code:
+          type: string
+          maxLength: 80
+        nameFr:
+          type: string
+          maxLength: 180
+        nameAr:
+          type: string
+          maxLength: 180
+        displayOrder:
+          type: integer
+          minimum: 0
+    CreateChapter:
+      type: object
+      required: [code, titleFr, titleAr, displayOrder]
+      properties:
+        code:
+          type: string
+          maxLength: 80
+        titleFr:
+          type: string
+          maxLength: 180
+        titleAr:
+          type: string
+          maxLength: 180
+        displayOrder:
+          type: integer
+          minimum: 0
+    CreateSkill:
+      type: object
+      required: [code, titleFr, titleAr, objectiveFr, objectiveAr]
+      properties:
+        code:
+          type: string
+          maxLength: 80
+        titleFr:
+          type: string
+          maxLength: 240
+        titleAr:
+          type: string
+          maxLength: 240
+        objectiveFr:
+          type: string
+        objectiveAr:
+          type: string

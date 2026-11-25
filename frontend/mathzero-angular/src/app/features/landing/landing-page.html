@@ -24,6 +24,14 @@
         <a routerLink="/status" appButton variant="secondary" size="lg">
           {{ i18n.translate('common.status') }}
         </a>
+        <a routerLink="/curriculum" appButton variant="secondary" size="lg">
+          {{ i18n.translate('curriculum.nav') }}
+        </a>
+        @if (auth.user()?.roles.includes('ADMIN')) {
+          <a routerLink="/admin" appButton variant="secondary" size="lg">
+            {{ i18n.translate('admin.nav') }}
+          </a>
+        }
       </div>
 
       <p class="mt-5 max-w-xl text-xs leading-5 text-muted">

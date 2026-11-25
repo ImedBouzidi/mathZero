@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { LanguageService } from '../../../core/i18n/language.service';
+import { AuthService } from '../../../core/auth/auth.service';
 
 /**
  * Neutral brand shell for landing, status, onboarding and account pages.
@@ -14,4 +15,13 @@ import { LanguageService } from '../../../core/i18n/language.service';
 })
 export class BrandShell {
   protected readonly i18n = inject(LanguageService);
+  protected readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+
+  protected logout(): void {
+    const destination = this.auth.user()?.roles.includes('ADMIN') ? '/login' : '/';
+    this.auth.logout().subscribe({
+      complete: () => void this.router.navigateByUrl(destination),
+    });
+  }
 }

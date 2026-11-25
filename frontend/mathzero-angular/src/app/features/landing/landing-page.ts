@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+import { AuthService } from '../../core/auth/auth.service';
 import { LanguageService } from '../../core/i18n/language.service';
 import { AppButton } from '../../design-system/button/app-button';
 import { AppIcon } from '../../design-system/icon/app-icon';
@@ -43,6 +44,11 @@ interface ExperienceCard {
 })
 export class LandingPage {
   protected readonly i18n = inject(LanguageService);
+  protected readonly auth = inject(AuthService);
+
+  constructor() {
+    this.auth.ensureSession().subscribe();
+  }
 
   protected readonly experiences: readonly ExperienceCard[] = [
     {

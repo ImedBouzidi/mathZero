@@ -1,0 +1,137 @@
+server:
+  port: ${RESOURCE_PORT:8089}
+
+spring:
+  application:
+    name: resource-service
+  datasource:
+    url: ${RESOURCE_DB_URL:jdbc:postgresql://localhost:5432/resource_db}
+    username: ${RESOURCE_DB_USERNAME:mathzero_admin}
+    password: ${RESOURCE_DB_PASSWORD:change-me-locally}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+app:
+  auth:
+    jwt-secret: ${AUTH_JWT_SECRET:change-this-local-development-secret-at-least-32-bytes}
+  providers:
+    wikimedia:
+      enabled: ${WIKIMEDIA_ENABLED:true}
+      base-url: ${WIKIMEDIA_API_URL:https://en.wikipedia.org/w/api.php}
+      user-agent: "${WIKIMEDIA_USER_AGENT:MathematicsZeroToHero/0.1 (educational platform; contact: admin@mathplay.com)}"
+    openstax:
+      enabled: ${OPENSTAX_ENABLED:false}
+      base-url: ${OPENSTAX_API_URL:https://openstax.org/apps/cms/api/v2}
+      site-url: ${OPENSTAX_SITE_URL:https://openstax.org}
+      user-agent: "${OPENSTAX_USER_AGENT:MathematicsZeroToHero/0.1 (educational platform)}"
+      # Optional: the public catalogue works without authentication. Supply
+      # either a bearer token or both an OAuth token URL and client credentials.
+      # These are server-side secrets; never expose them to Angular or logs.
+      bearer-token: ${OPENSTAX_BEARER_TOKEN:}
+      token-url: ${OPENSTAX_TOKEN_URL:}
+      client-id: ${OPENSTAX_CLIENT_ID:}
+      client-secret: ${OPENSTAX_CLIENT_SECRET:}
+    geogebra:
+      enabled: ${GEOGEBRA_ENABLED:false}
+      base-url: ${GEOGEBRA_API_URL:https://api.geogebra.org/v1.0}
+      site-url: ${GEOGEBRA_SITE_URL:https://www.geogebra.org}
+      user-agent: "${GEOGEBRA_USER_AGENT:MathematicsZeroToHero/0.1 (educational platform)}"
+    phet:
+      enabled: ${PHET_ENABLED:false}
+      base-url: ${PHET_METADATA_URL:https://phet.colorado.edu/services/metadata/1.3/simulations}
+      site-url: ${PHET_SITE_URL:https://phet.colorado.edu}
+      user-agent: "${PHET_USER_AGENT:MathematicsZeroToHero/0.1 (educational platform)}"
+      cache-seconds: ${PHET_METADATA_CACHE_SECONDS:3600}
+    youtube:
+      enabled: ${YOUTUBE_ENABLED:false}
+      base-url: ${YOUTUBE_API_URL:https://www.googleapis.com/youtube/v3}
+      # Server-side secret only. Never expose this key to Angular or logs.
+      api-key: ${YOUTUBE_API_KEY:}
+    cnte:
+      authorized: ${CNTE_AUTHORIZED:false}
+      base-url: ${CNTE_API_URL:}
+      api-token: ${CNTE_API_TOKEN:}
+  suggestions:
+    cache-ttl: ${SUGGESTIONS_CACHE_TTL:${WIKIMEDIA_SUGGESTIONS_CACHE_TTL:15m}}
+    limit-per-query: ${SUGGESTIONS_LIMIT_PER_QUERY:${WIKIMEDIA_SUGGESTIONS_LIMIT:5}}
+    max-per-cycle: ${SUGGESTIONS_MAX_PER_CYCLE:${WIKIMEDIA_SUGGESTIONS_MAX_PER_CYCLE:10}}
+    # Each provider query set assigns its results to one experience cycle.
+    # Disabled providers return no candidates. Nothing is published automatically.
+    providers:
+      wikimedia:
+        queries:
+          PRIMARY:
+            fr: [fractions, "arithmétique élémentaire"]
+            ar: [الكسور, الحساب]
+          BASIC:
+            fr: ["équation du premier degré", géométrie]
+            ar: ["معادلة من الدرجة الأولى", هندسة]
+          SECONDARY:
+            fr: [fonction, trigonométrie]
+            ar: [دالة, مثلثات]
+      # OpenStax's catalogue search matches book titles, not full text. Use
+      # title words that exist in the public catalogue so every cycle can return
+      # candidates.
+      openstax:
+        queries:
+          PRIMARY:
+            en: [prealgebra]
+          BASIC:
+            en: ["elementary algebra", "intermediate algebra"]
+          SECONDARY:
+            en: ["algebra and trigonometry", calculus]
+      geogebra:
+        queries:
+          PRIMARY:
+            fr: [fractions, géométrie]
+            ar: [الكسور, هندسة]
+          BASIC:
+            fr: ["équation du premier degré", géométrie]
+            ar: [معادلة, هندسة]
+          SECONDARY:
+            fr: [fonction, trigonométrie]
+            ar: [دالة, مثلثات]
+      # PhET searches its localized simulation metadata by substring. Prefer
+      # plural/lemma forms that exist in the French and Arabic catalogues.
+      phet:
+        queries:
+          PRIMARY:
+            fr: [fractions, arithmétique]
+            ar: [الكسور, حساب]
+          BASIC:
+            fr: [équation, "modélisation par les aires"]
+            ar: [معادلة, أعداد]
+          SECONDARY:
+            fr: [fonction, trigonométrie]
+            ar: [مثلثات, مستقيم]
+  http:
+    connect-timeout-seconds: ${PROVIDER_CONNECT_TIMEOUT_SECONDS:3}
+    read-timeout-seconds: ${PROVIDER_READ_TIMEOUT_SECONDS:8}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+  instance:
+    hostname: ${EUREKA_INSTANCE_HOSTNAME:localhost}
+    prefer-ip-address: ${EUREKA_PREFER_IP_ADDRESS:false}
+    instance-id: ${spring.application.name}:${server.port}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true

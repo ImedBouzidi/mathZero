@@ -8,13 +8,27 @@ spring:
     gateway:
       server:
         webflux:
-          # Downstream routes are added as each business service is implemented.
+          routes:
+            - id: identity-service
+              uri: lb://IDENTITY-SERVICE
+              predicates:
+                - Path=/api/v1/auth/**
+            - id: curriculum-service
+              uri: lb://CURRICULUM-SERVICE
+              predicates:
+                - Path=/api/v1/curricula/**,/api/v1/admin/curricula/**,/api/v1/versions/**,/api/v1/levels/**,/api/v1/grades/**,/api/v1/subjects/**,/api/v1/chapters/**,/api/v1/skills/**
+            - id: resource-service
+              uri: lb://RESOURCE-SERVICE
+              predicates:
+                - Path=/api/v1/resources/**,/api/v1/admin/resources/**,/api/v1/learning/**
           httpclient:
             connect-timeout: 2000
             response-timeout: 10s
 
 app:
   version: ${APP_VERSION:0.1.0}
+  auth:
+    jwt-secret: ${AUTH_JWT_SECRET:change-this-local-development-secret-at-least-32-bytes}
   cors:
     # Comma-separated list of browser origins allowed to call the public API.
     allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:4200}
@@ -26,7 +40,8 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
   instance:
-    prefer-ip-address: true
+    hostname: ${EUREKA_INSTANCE_HOSTNAME:localhost}
+    prefer-ip-address: ${EUREKA_PREFER_IP_ADDRESS:false}
     instance-id: ${spring.application.name}:${server.port}
 
 management:

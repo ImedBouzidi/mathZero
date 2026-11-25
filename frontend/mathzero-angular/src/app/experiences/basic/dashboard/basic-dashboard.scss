@@ -23,6 +23,10 @@
   .basic-dashboard__continue {
     grid-column: span 2;
   }
+
+  .basic-dashboard__resources {
+    grid-column: span 2;
+  }
 }
 
 @media (min-width: 1100px) {
@@ -44,6 +48,10 @@
   .basic-dashboard__activity,
   .basic-dashboard__recommended {
     grid-column: span 4;
+  }
+
+  .basic-dashboard__resources {
+    grid-column: span 12;
   }
 }
 

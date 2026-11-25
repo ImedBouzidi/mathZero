@@ -1,6 +1,129 @@
 name: mathzero
 
 services:
+  eureka-server:
+    build:
+      context: ../../backend
+      dockerfile: eureka-server/Dockerfile
+    container_name: mathzero-eureka
+    environment:
+      EUREKA_PORT: 8761
+    ports:
+      - "${EUREKA_PORT:-8761}:8761"
+
+  identity-service:
+    build:
+      context: ../../backend
+      dockerfile: identity-service/Dockerfile
+    container_name: mathzero-identity
+    restart: unless-stopped
+    env_file:
+      - path: ../../backend/identity-service/.env
+        required: false
+    environment:
+      IDENTITY_PORT: 8091
+      IDENTITY_DB_URL: jdbc:postgresql://postgres:5432/identity_db
+      IDENTITY_DB_USERNAME: ${POSTGRES_ADMIN_USER:-mathzero_admin}
+      IDENTITY_DB_PASSWORD: ${POSTGRES_ADMIN_PASSWORD:-change-me-locally}
+      AUTH_JWT_SECRET: ${AUTH_JWT_SECRET:-change-this-local-development-secret-at-least-32-bytes}
+      EUREKA_URL: http://eureka-server:8761/eureka/
+      EUREKA_INSTANCE_HOSTNAME: identity-service
+      AUTH_COOKIE_SECURE: ${AUTH_COOKIE_SECURE:-false}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    ports:
+      - "${IDENTITY_PORT:-8091}:8091"
+
+  curriculum-service:
+    build:
+      context: ../../backend
+      dockerfile: curriculum-service/Dockerfile
+    container_name: mathzero-curriculum
+    restart: unless-stopped
+    environment:
+      CURRICULUM_PORT: 8082
+      CURRICULUM_DB_URL: jdbc:postgresql://postgres:5432/curriculum_db
+      CURRICULUM_DB_USERNAME: ${POSTGRES_ADMIN_USER:-mathzero_admin}
+      CURRICULUM_DB_PASSWORD: ${POSTGRES_ADMIN_PASSWORD:-change-me-locally}
+      AUTH_JWT_SECRET: ${AUTH_JWT_SECRET:-change-this-local-development-secret-at-least-32-bytes}
+      EUREKA_URL: http://eureka-server:8761/eureka/
+      EUREKA_INSTANCE_HOSTNAME: curriculum-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    ports:
+      - "${CURRICULUM_PORT:-8082}:8082"
+
+  resource-service:
+    build:
+      context: ../../backend
+      dockerfile: resource-service/Dockerfile
+    container_name: mathzero-resource
+    restart: unless-stopped
+    environment:
+      RESOURCE_PORT: 8089
+      RESOURCE_DB_URL: jdbc:postgresql://postgres:5432/resource_db
+      RESOURCE_DB_USERNAME: ${POSTGRES_ADMIN_USER:-mathzero_admin}
+      RESOURCE_DB_PASSWORD: ${POSTGRES_ADMIN_PASSWORD:-change-me-locally}
+      AUTH_JWT_SECRET: ${AUTH_JWT_SECRET:-change-this-local-development-secret-at-least-32-bytes}
+      WIKIMEDIA_ENABLED: ${WIKIMEDIA_ENABLED:-true}
+      OPENSTAX_ENABLED: ${OPENSTAX_ENABLED:-false}
+      OPENSTAX_API_URL: ${OPENSTAX_API_URL:-https://openstax.org/apps/cms/api/v2}
+      OPENSTAX_SITE_URL: ${OPENSTAX_SITE_URL:-https://openstax.org}
+      OPENSTAX_BEARER_TOKEN: ${OPENSTAX_BEARER_TOKEN:-}
+      OPENSTAX_TOKEN_URL: ${OPENSTAX_TOKEN_URL:-}
+      OPENSTAX_CLIENT_ID: ${OPENSTAX_CLIENT_ID:-}
+      OPENSTAX_CLIENT_SECRET: ${OPENSTAX_CLIENT_SECRET:-}
+      GEOGEBRA_ENABLED: ${GEOGEBRA_ENABLED:-false}
+      GEOGEBRA_API_URL: ${GEOGEBRA_API_URL:-https://api.geogebra.org/v1.0}
+      GEOGEBRA_SITE_URL: ${GEOGEBRA_SITE_URL:-https://www.geogebra.org}
+      PHET_ENABLED: ${PHET_ENABLED:-false}
+      PHET_METADATA_URL: ${PHET_METADATA_URL:-https://phet.colorado.edu/services/metadata/1.3/simulations}
+      PHET_SITE_URL: ${PHET_SITE_URL:-https://phet.colorado.edu}
+      PHET_METADATA_CACHE_SECONDS: ${PHET_METADATA_CACHE_SECONDS:-3600}
+      YOUTUBE_ENABLED: ${YOUTUBE_ENABLED:-false}
+      YOUTUBE_API_KEY: ${YOUTUBE_API_KEY:-}
+      CNTE_AUTHORIZED: ${CNTE_AUTHORIZED:-false}
+      CNTE_API_URL: ${CNTE_API_URL:-}
+      CNTE_API_TOKEN: ${CNTE_API_TOKEN:-}
+      EUREKA_URL: http://eureka-server:8761/eureka/
+      EUREKA_INSTANCE_HOSTNAME: resource-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    ports:
+      - "${RESOURCE_PORT:-8089}:8089"
+
+  gateway-service:
+    build:
+      context: ../../backend
+      dockerfile: gateway-service/Dockerfile
+    container_name: mathzero-gateway
+    restart: unless-stopped
+    environment:
+      GATEWAY_PORT: 8090
+      AUTH_JWT_SECRET: ${AUTH_JWT_SECRET:-change-this-local-development-secret-at-least-32-bytes}
+      EUREKA_URL: http://eureka-server:8761/eureka/
+      EUREKA_INSTANCE_HOSTNAME: gateway-service
+      APP_CORS_ALLOWED_ORIGINS: ${APP_CORS_ALLOWED_ORIGINS:-http://localhost:4200}
+    depends_on:
+      eureka-server:
+        condition: service_started
+      identity-service:
+        condition: service_started
+      curriculum-service:
+        condition: service_started
+      resource-service:
+        condition: service_started
+    ports:
+      - "${GATEWAY_PORT:-8090}:8090"
   postgres:
     image: postgres:18-alpine
     container_name: mathzero-postgres
